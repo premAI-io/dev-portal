@@ -4,6 +4,12 @@
  * work well for content-centric websites.
  */
 
+ @font-face {
+  font-family: 'Pretendard';
+  src: url('/font/Pretendard-Medium.otf') format(opentype);
+}
+
+
 /* You can override the default Infima variables here. */
 :root {
   --ifm-color-primary: #2e8555;
@@ -18,8 +24,8 @@
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
+[data-theme="dark"] {
+  --ifm-color-primary: #1d1e24;
   --ifm-color-primary-dark: #21af90;
   --ifm-color-primary-darker: #1fa588;
   --ifm-color-primary-darkest: #1a8870;
@@ -27,4 +33,119 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-breadcrumb-color-active: #8c8c8c;
+  --ifm-color-content: #ededed !important;
+  --ifm-background-surface-color: #20232b;
+  --ifm-footer-link-hover-color: #ededed;
+  --ifm-navbar-link-hover-color: #ff7e7b;
+  --ifm-menu-color-active: #ff7e7b;
+  --ifm-link-color: #ff7e7b;
+  --ifm-color-gray-300: #ededed;
+  --ifm-color-gray-200: #ededed;
+  --ifm-pagination-nav-color-hover: #ff7e7b;
+  --ifm-breadcrumb-item-background-active: transparent;
+}
+
+[data-theme="dark"] a:not(.button):hover {
+  border-color: #ff7e7b;
+  color: #ff7e7b;
+}
+
+[data-theme="dark"] .footer--dark {
+  --ifm-footer-background-color: transparent;
+}
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  font-family: "Pretendard";
+  --ifm-heading-color: #fff;
+  background: linear-gradient(90.13deg, #f49e97 6.35%, #f4bf97 82.76%);
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+[data-theme="dark"] .hero--primary,
+[data-theme="dark"] .hero__subtitle {
+  --ifm-font-color-base-inverse: #fff;
+}
+html[data-theme="dark"] {
+  font-family: "Pretendard";
+}
+[data-theme="dark"] body {
+  position: relative;
+  font-family: "Pretendard";
+}
+[data-theme="dark"] body::after {
+  content: "";
+  background: url("/src/images/gradient1.png") no-repeat;
+  height: 900px;
+  width: 100%;
+  background-size: cover;
+  position: fixed;
+  bottom: 0px;
+  left: auto;
+  right: auto;
+  z-index: -1;
+}
+@media (max-width:767px) {
+  [data-theme="dark"] body::after {
+    height: 600px;
+    bottom: -100px;
+    background-position: center;
+  }
+}
+
+[data-theme="dark"] .navbar {
+  box-shadow: 0px 4.49864px 26.9918px -1.12466px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .table-of-contents__link:hover,
+[data-theme="dark"] .table-of-contents__link--active {
+  color: #ff7e7b;
+}
+
+[data-theme="dark"] .card {
+  background-color: transparent;
+  position: relative;
+  border: transparent !important;
+}
+[data-theme="dark"] .card::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0px;
+  border-radius: 1rem;
+  padding: 2px;
+  background: linear-gradient(
+    131.93deg,
+    rgba(245, 142, 142, 0.6) 11.72%,
+    rgba(246, 162, 148, 0.23) 38.41%,
+    rgba(248, 190, 157, 0.23) 66.36%,
+    rgba(249, 212, 164, 0.6) 91.8%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+[data-theme="dark"]
+  .tag_node_modules-\@docusaurus-theme-classic-lib-theme-Tag-styles-module {
+  --docusaurus-tag-list-border: #fff;
+  color: #ededed;
+}
+
+[data-theme="dark"] .breadcrumbs__item:not(:last-child):after {
+  filter: invert(1) brightness(100);
+  opacity: 1;
+}
+[data-theme="dark"] .sidebarItemLinkActive_node_modules-\@docusaurus-theme-classic-lib-theme-BlogSidebar-Desktop-styles-module {
+  --ifm-color-primary: #ff7e7b !important;
+}
+[data-theme="dark"] .toggle_node_modules-\@docusaurus-theme-classic-lib-theme-ColorModeToggle-styles-module {
+  display: none;
 }
