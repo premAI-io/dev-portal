@@ -12,9 +12,28 @@ Welcome to Prem! This is the documentation for Prem, the open source platform fo
 
 ## What is Prem?
 
-Prem is a platform for running open-source AI models on your own devices, either on MacOS, useful for local development and personal use or on your Linux servers for production. Prem is open source and free to use, no data is collected because we CANNOT see your data, as everything runs on-premise.
+Prem is a platform for running open-source AI models on your own devices, either on MacOS, useful for local development and personal use or on your Linux servers for production. Prem standardize set of **interafces** for AI models, defining types for input and output so that you can run any model and use an unified API to interact with it, regardless of the language and framework it was built with.
 
-## Get started
+Prem is open source and free to use, no data is collected because we CANNOT see your data, as everything runs on-premise.
 
-- Develop applications with Prem [installing Prem App on MacOS or your own Linux Server for production](/docs/prem-app/install-prem).
+### Main concepts
+
+Prem simplifies the process of running AI models on your own infrastrucutre. It is composed of several components:
+
+- **Prem Service**: An AI model to be served on the platform is called a Prem Service. It is a Docker container that exposes a standardized HTTP API for the **interface** type to interact with the model.
+- **Prem Interface**: An interface is the combination of input and output for a Prem Service. It is a semantic type that defines the structure of the data that can be sent to the model and the structure of the data that the model will return. Prem comes with a set of standard interfaces, but you can also create your own.
+  - [x] 😃 Chat
+  - [x] 📕 Embedding
+  - [x] 🏛️ Vector Store
+  - [ ] 🎨 Diffuser
+  - [ ] 💻 Coder
+  - [ ] 🎵 Text to Audio
+  - [ ] 🎵 Audio to Text
+  - [ ] 📷 Vision
+  - [ ] 📖 Summary
+  - [ ] 🖼️ Upscaler
+  - [ ] 📹 Video
+- [**Prem App**](/docs/prem-app/install-macos): the desktop app for MacOS that allows you to run AI models on your own computer.
+
+
 
