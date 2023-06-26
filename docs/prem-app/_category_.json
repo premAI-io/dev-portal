@@ -1,0 +1,8 @@
+{
+  "label": "Prem App",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Prem App can run on desktop computers or your own Linux server. It can be installed as a standalone desktop app on your device, and it can also be accessed through a web browser."
+  }
+}
