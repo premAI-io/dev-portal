@@ -33,22 +33,24 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
-  --ifm-breadcrumb-color-active: #8c8c8c;
-  --ifm-color-content: #ededed !important;
+  --ifm-breadcrumb-color-active: #F58E8E;
+  --ifm-color-content: #fff !important;
   --ifm-background-surface-color: #20232b;
   --ifm-footer-link-hover-color: #ededed;
-  --ifm-navbar-link-hover-color: #ff7e7b;
-  --ifm-menu-color-active: #ff7e7b;
-  --ifm-link-color: #ff7e7b;
+  --ifm-navbar-link-hover-color: #F6C285;
+  --ifm-menu-color-active: #F6C285;
+  --ifm-menu-color: #606770;
+  --ifm-link-color: #F6C285;
   --ifm-color-gray-300: #ededed;
-  --ifm-color-gray-200: #ededed;
+  /* --ifm-color-content-secondary: #525860; */
+  /* --ifm-color-gray-200: #F6C285; */
   --ifm-pagination-nav-color-hover: #ff7e7b;
   --ifm-breadcrumb-item-background-active: transparent;
 }
 
 [data-theme="dark"] a:not(.button):hover {
-  border-color: #ff7e7b;
-  color: #ff7e7b;
+  border-color: #F6C285;
+  color: #F6C285;
 }
 
 [data-theme="dark"] .footer--dark {
@@ -61,12 +63,7 @@
 [data-theme="dark"] h5,
 [data-theme="dark"] h6 {
   font-family: "Pretendard";
-  --ifm-heading-color: #fff;
-  background: linear-gradient(90.13deg, #f49e97 6.35%, #f4bf97 82.76%);
-  -webkit-text-fill-color: transparent;
-  text-fill-color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: white;
 }
 
 [data-theme="dark"] .hero--primary,
@@ -80,25 +77,6 @@ html[data-theme="dark"] {
   position: relative;
   font-family: "Pretendard";
 }
-[data-theme="dark"] body::after {
-  content: "";
-  background: url("/src/images/gradient1.png") no-repeat;
-  height: 900px;
-  width: 100%;
-  background-size: cover;
-  position: fixed;
-  bottom: 0px;
-  left: auto;
-  right: auto;
-  z-index: -1;
-}
-@media (max-width:767px) {
-  [data-theme="dark"] body::after {
-    height: 600px;
-    bottom: -100px;
-    background-position: center;
-  }
-}
 
 [data-theme="dark"] .navbar {
   box-shadow: 0px 4.49864px 26.9918px -1.12466px rgba(0, 0, 0, 0.2);
@@ -106,20 +84,25 @@ html[data-theme="dark"] {
 
 [data-theme="dark"] .table-of-contents__link:hover,
 [data-theme="dark"] .table-of-contents__link--active {
-  color: #ff7e7b;
+  color: #F6C285;
 }
 
 [data-theme="dark"] .card {
   background-color: transparent;
   position: relative;
+  min-height: 100%;
   border: transparent !important;
+  border-radius: 10px;
+  border: 1px solid rgba(237, 237, 237, 0.20) !important;
 }
 [data-theme="dark"] .card::after {
   content: "";
+  visibility: hidden;
   pointer-events: none;
   position: absolute;
   inset: 0px;
-  border-radius: 1rem;
+  border-radius: 10px;
+  border-color: transparent;
   padding: 2px;
   background: linear-gradient(
     131.93deg,
@@ -131,6 +114,25 @@ html[data-theme="dark"] {
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
+}
+[data-theme="dark"] .card:hover::after {
+  visibility: visible;
+  background-size: 300% 300%;
+  background-position: 0 50%;
+  border-radius: 10px;
+  animation: moveGradient 4s alternate infinite;
+}
+[data-theme="dark"] .card:hover {
+  border-color: transparent !important;
+}
+[data-theme="dark"] .card:hover h2 {
+  color: #F58E8E;
+}
+
+@keyframes moveGradient {
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 [data-theme="dark"]
@@ -144,8 +146,32 @@ html[data-theme="dark"] {
   opacity: 1;
 }
 [data-theme="dark"] .sidebarItemLinkActive_node_modules-\@docusaurus-theme-classic-lib-theme-BlogSidebar-Desktop-styles-module {
-  --ifm-color-primary: #ff7e7b !important;
+  --ifm-color-primary: #FBB35E !important;
 }
 [data-theme="dark"] .toggle_node_modules-\@docusaurus-theme-classic-lib-theme-ColorModeToggle-styles-module {
   display: none;
+}
+[data-theme="dark"] .pagination-nav__sublabel {
+  color: #525860;
+}
+
+[data-theme="dark"] .pagination-nav__link {
+  border-color: #DADDE1;
+}
+
+[data-theme="dark"] .list_node_modules-\@docusaurus-theme-classic-lib-theme-DocCategoryGeneratedIndexPage-styles-module article:nth-last-child(-n+2) {
+  margin-bottom: 2rem !important;
+}
+
+@media (min-width: 997px) {
+  [data-theme="dark"] .container {
+    margin-left: 50px;
+    width: calc(100% - 50px);
+  }
+}
+@media (min-width: 1200px) {
+  [data-theme="dark"] .container {
+    margin-left: 100px;
+    width: calc(100% - 100px);
+  }
 }
