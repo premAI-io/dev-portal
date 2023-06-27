@@ -33,7 +33,7 @@ Prem simplifies the process of running AI models on your own infrastrucutre. It 
   - [ ] 📖 Summary
   - [ ] 🖼️ Upscaler
   - [ ] 📹 Video
-- [**Prem App**](/docs/prem-app/install-macos): the desktop app for MacOS that allows you to run AI models on your own computer.
+- [**Prem App**](/docs/prem-app/install/install-macos-app.md): the desktop app for MacOS that allows you to run AI models on your own computer.
 
 
 
