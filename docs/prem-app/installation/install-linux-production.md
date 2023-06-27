@@ -29,3 +29,7 @@ git clone https://github.com/premAI-io/prem-app.git
 cd ./prem-app
 docker-compose up -f docker-compose.yml -f docker-compose.gpu.yml -d
 ```
+
+And you will have the UI at `http://{localhost|server_ip}:1420`. 
+
+> Make sure that in `Settings` the Backend URL is set to `http://{localhost|server_ip}:8000`.
