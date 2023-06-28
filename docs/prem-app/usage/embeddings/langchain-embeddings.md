@@ -1,10 +1,14 @@
 ---
-sidebar_position: 2
+id: chat-quickstart
+title: Quick Start
+sidebar_label: Quick Start
+sidebar_position: 1
 ---
 
-# Langchain Embeddings
+# Quick Start
+## Langchain Embeddings
 
-### Import the necessary dependencies
+- Import the necessary dependencies
 
 ```python
 import os
@@ -14,7 +18,7 @@ from langchain.embeddings import OpenAIEmbeddings
 os.environ["OPENAI_API_KEY"] = "random-string"
 ```
 
-### Instantiate the Embeddings Object connecting to the service
+- Instantiate the Embeddings Object connecting to the service
 
 ```python
 embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8000/api/v1")
@@ -23,7 +27,7 @@ query_result = embeddings.embed_query(text)
 doc_result = embeddings.embed_documents([text])
 ```
 
-### Generate the Embeddings
+- Generate the Embeddings
 
 ```python
 embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8000/api/v1")

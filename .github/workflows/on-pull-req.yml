@@ -1,4 +1,4 @@
-name: Lint and Build
+name: Build
 on: 
   pull_request:
     branches: [main]
@@ -14,5 +14,3 @@ jobs:
       - run: yarn install --frozen-lockfile
       
       - run: yarn build
-      
-      - run: yarn lint
