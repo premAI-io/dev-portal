@@ -3,6 +3,6 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "5 minutes to learn the most important Docusaurus concepts."
+    "description": "Getting Started with Prem. All Prem services expose same APIs as OpenAI does. In this way, if you are currently using a SDK, Client or wrapper on top of OpenAI APIs you can easily switch specifying a different BASE_URL."
   }
 }

@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Llama Index: Talk to your data
+# Llama Index: Talk to your Data
 
 ### Install the necessary Dependencies
 
