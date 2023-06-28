@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Langchain: Talk to your Data
 
-### Install the necessary dependencies
+- Install the necessary dependencies
 
 ```python
 import os
@@ -20,7 +20,7 @@ from langchain.prompts import PromptTemplate
 os.environ["OPENAI_API_KEY"] = "random-string"
 ```
 
-### Create the Documents using Prem Landing Page Content
+- Create the Documents using Prem Landing Page Content
     
 ```python
 doc1 = Document(page_content="Prem is an easy to use open source AI platform. With Prem you can quickly build provacy preserving AI applications.")
@@ -53,7 +53,7 @@ Make payments with Bitcoin and Cryptocurrency. It's a permissionless infrastruct
 """)
 ```
 
-### Using QDrant, Vicuna and Sentence Transformers Running Locally using Prem
+- Using QDrant, Vicuna and Sentence Transformers Running Locally using Prem
 
 ```python
 # Using vicuna-7b-q4
@@ -77,7 +77,7 @@ docs = vectorstore.similarity_search(query)
 print(docs[0].page_content)
 ```
 
-### Perform the Query
+- Perform the Query
 
 ```python
 template = """
@@ -102,7 +102,7 @@ context = docs[0].page_content
 chain.run(question=question, context=context)
 ```
 
-### Example using Redis instead of Qdrant
+- Example using Redis instead of Qdrant
 
 ```python
 # Using vicuna-7b-q4
@@ -121,7 +121,7 @@ docs = vectorstore.similarity_search(query)
 print(docs[0].page_content)
 ```
 
-### Perform the Query
+- Perform the Query
 
 ```python
 template = """
