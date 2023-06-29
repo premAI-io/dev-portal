@@ -41,6 +41,8 @@ const config = {
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/premAI-io/dev-portal',
+            docLayoutComponent: "@theme/DocPage",
+            docItemComponent: "@theme/ApiItem" // Derived from docusaurus-theme-openapi-docs
         },
         blog: {
           showReadingTime: true,
