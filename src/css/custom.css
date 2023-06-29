@@ -163,13 +163,11 @@ html[data-theme="dark"] {
 
 @media (min-width: 997px) {
   [data-theme="dark"] .container {
-    margin-left: 50px;
     width: calc(100% - 50px);
   }
 }
 @media (min-width: 1200px) {
   [data-theme="dark"] .container {
-    margin-left: 100px;
     width: calc(100% - 100px);
   }
 }
@@ -205,7 +203,7 @@ html[data-theme="dark"] {
 
 [data-theme="dark"] .heroBanner_src-pages-index-module {
   background: url("../images/bg.png");
-  min-height: 490px;
+  min-height: calc(100vh - 300px);
 }
 [data-theme=dark] blockquote, [data-theme=dark] code {
   background-color: #111;
