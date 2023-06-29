@@ -77,7 +77,7 @@ html[data-theme="dark"] {
 }
 
 [data-theme="dark"] .navbar {
-  box-shadow: 0px 4.49864px 26.9918px -1.12466px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 5.116926193237305px 30.70151138305664px -1.2792315483093262px rgba(0, 0, 0, 0.20);
 }
 
 [data-theme="dark"] .table-of-contents__link:hover,
@@ -172,4 +172,31 @@ html[data-theme="dark"] {
     margin-left: 100px;
     width: calc(100% - 100px);
   }
+}
+
+[data-theme="dark"] .button__primary {
+  background-color: #F49893;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 16px;
+}
+[data-theme="dark"] .button__primary:hover {
+  color: #fff;
+}
+
+[data-theme="dark"] .heroBanner_src-pages-index-module {
+  background: url("../images/bg.png");
+}
+[data-theme=dark] blockquote, [data-theme=dark] code {
+  background-color: #111;
+}
+
+[data-theme=dark] .footer__copyright {
+  margin-top: 2rem;
+}
+
+[data-theme=dark] .theme-doc-markdown.markdown,
+article.margin-top--lg {
+  min-height: 300px;
+
 }
