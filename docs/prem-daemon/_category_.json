@@ -1,0 +1,8 @@
+{
+  "label": "Prem Daemon",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Prem Daemon handles the orchestration of the different services in the Prem Ecosystem."
+  }
+}
