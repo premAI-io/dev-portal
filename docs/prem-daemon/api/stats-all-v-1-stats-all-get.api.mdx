@@ -1,0 +1,34 @@
+---
+id: stats-all-v-1-stats-all-get
+title: "Stats All"
+description: "Stats All"
+sidebar_label: "Stats All"
+hide_title: true
+hide_table_of_contents: true
+api: {"operationId":"stats_all_v1_stats_all__get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"title":"OSStatsResponse","required":["cpu_percentage","memory_usage","memory_limit","memory_percentage","storage_usage","storage_limit","storage_percentage"],"type":"object","properties":{"cpu_percentage":{"title":"Cpu Percentage","type":"number"},"memory_usage":{"title":"Memory Usage","type":"number"},"memory_limit":{"title":"Memory Limit","type":"number"},"memory_percentage":{"title":"Memory Percentage","type":"number"},"storage_usage":{"title":"Storage Usage","type":"number"},"storage_limit":{"title":"Storage Limit","type":"number"},"storage_percentage":{"title":"Storage Percentage","type":"number"}}}}}}},"description":"Stats All","method":"get","path":"/v1/stats-all/","info":{"title":"Prem Box","version":"0.0.1"},"postman":{"name":"Stats All","description":{"type":"text/plain"},"url":{"path":["v1","stats-all",""],"host":["{{baseUrl}}"],"query":[],"variable":[]},"header":[{"key":"Accept","value":"application/json"}],"method":"GET"}}
+sidebar_class_name: "get api-method"
+info_path: docs/prem-daemon/api/prem-box
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import TabItem from "@theme/TabItem";
+
+## Stats All
+
+
+
+Stats All
+
+<div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Successful Response
+
+</div><div><MimeTabs schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs><TabItem label={"Schema"} value={"Schema"}><details style={{}} data-collapsed={false} open={true}><summary style={{"textAlign":"left"}}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"cpu_percentage"} required={true} schemaName={"Cpu Percentage"} qualifierMessage={undefined} schema={{"title":"Cpu Percentage","type":"number"}}></SchemaItem><SchemaItem collapsible={false} name={"memory_usage"} required={true} schemaName={"Memory Usage"} qualifierMessage={undefined} schema={{"title":"Memory Usage","type":"number"}}></SchemaItem><SchemaItem collapsible={false} name={"memory_limit"} required={true} schemaName={"Memory Limit"} qualifierMessage={undefined} schema={{"title":"Memory Limit","type":"number"}}></SchemaItem><SchemaItem collapsible={false} name={"memory_percentage"} required={true} schemaName={"Memory Percentage"} qualifierMessage={undefined} schema={{"title":"Memory Percentage","type":"number"}}></SchemaItem><SchemaItem collapsible={false} name={"storage_usage"} required={true} schemaName={"Storage Usage"} qualifierMessage={undefined} schema={{"title":"Storage Usage","type":"number"}}></SchemaItem><SchemaItem collapsible={false} name={"storage_limit"} required={true} schemaName={"Storage Limit"} qualifierMessage={undefined} schema={{"title":"Storage Limit","type":"number"}}></SchemaItem><SchemaItem collapsible={false} name={"storage_percentage"} required={true} schemaName={"Storage Percentage"} qualifierMessage={undefined} schema={{"title":"Storage Percentage","type":"number"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"cpu_percentage\": 0,\n  \"memory_usage\": 0,\n  \"memory_limit\": 0,\n  \"memory_percentage\": 0,\n  \"storage_usage\": 0,\n  \"storage_limit\": 0,\n  \"storage_percentage\": 0\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div>
+      
