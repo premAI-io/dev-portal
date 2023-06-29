@@ -16,16 +16,15 @@ Prem is a platform for running open-source AI models on your own devices, either
 
 Prem is open source and free to use, no data is collected because we CANNOT see your data, as everything runs on-premise.
 
+- [Get Started as a Developer to use Prem Services](/docs/category/usage)
+- [Publish your AI Service on Prem](/docs/category/service-packaging/)
+
 ### Main concepts
 
 Prem simplifies the process of running AI models on your own infrastrucutre. It is composed of several components:
 
 - **Prem Service**: An AI model to be served on the platform is called a Prem Service. It is a Docker container that exposes a standardized HTTP API for the **interface** type to interact with the model.
-
-- **Prem Interface**: An interface is the combination of input and output for a Prem Service. It is a semantic type that defines the structure of the data that can be sent to the model and the structure of the data that the model will return. Prem comes with a set of standard interfaces, but you can also create your own.
-
+- **Prem Interface**: An interface is the combination of input and output for a Prem Service. It is a semantic type that defines the structure of the data that can be sent to the model and the structure of the data that the model will return. Prem comes with a set of standard interfaces, but you can also create your own. Currently the following interfaces have been created: 😃 Chat, 📕 Embeddings, 🏛️ Vector Store, 🎨 Diffuser. More to come.
 - [**Prem App**](/docs/prem-app/installation/install-macos-app.md): the desktop app for MacOS that allows you to run AI models on your own computer.
-
-- [**Prem Daemon**](#): the daemon that runs on your machine and allows you to run AI models on your own infrastructure
-
-- [**Prem Registry**](#): Each Prem Service can be published on the public list of AI services.
+- **Prem Daemon**: the daemon that runs on your machine and allows you to run AI models on your own infrastructure. It represents the component that exposes all the endpoints necessary to handle the different services and the underlying infrastructure.
+- **Prem Registry**: the registry contains all the metadata information in order to run a service in the Prem Ecosystem. Each Prem Service can be published on the public list of AI services.

@@ -1,12 +1,11 @@
 ---
 id: chat-quickstart
-title: Quick Start
-sidebar_label: Quick Start
-sidebar_position: 1
+title: Quick Start with LangChain
+sidebar_label: LangChain
+sidebar_position: 2
 ---
 
-# Quick Start
-## Langchain Embeddings
+# Quick Start with LangChain
 
 - Import the necessary dependencies
 

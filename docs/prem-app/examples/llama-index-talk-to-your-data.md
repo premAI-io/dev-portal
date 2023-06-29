@@ -2,9 +2,9 @@
 sidebar_position: 4
 ---
 
-# Llama Index: Talk to your data
+# Llama Index: Talk to your Data
 
-### Install the necessary Dependencies
+- Install the necessary Dependencies
 
 ```python
 import os
@@ -21,7 +21,7 @@ from llama_index import LangchainEmbedding, ServiceContext
 os.environ["OPENAI_API_KEY"] = "random-string"
 ```
 
-### Create the Documents using Prem Landing Page Content
+- Create the Documents using Prem Landing Page Content
 
 ```python
 doc1 = Document(text="Prem is an easy to use open source AI platform. With Prem you can quickly build privacy preserving AI applications.")
@@ -54,7 +54,7 @@ Make payments with Bitcoin and Cryptocurrency. It's a permissionless infrastruct
 """)
 ```
 
-### Instantiate the LLMs objects accordingly
+- Instantiate the LLMs objects accordingly
 
 ```python
 # Using vicuna-7b-q4
@@ -76,7 +76,7 @@ storage_context = StorageContext.from_defaults(vector_store=vector_store)
 index = ListIndex.from_documents([doc1, doc2, doc3], storage_context=storage_context)
 ```
 
-### Query the Index
+- Query the Index
 
 ```python
 query_engine = index.as_query_engine(

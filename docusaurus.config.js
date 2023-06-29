@@ -61,7 +61,7 @@ const config = {
       // Replace with your project's social card
       image: 'img/prem-social-card.jpg',
       navbar: {
-        title: 'Developers',
+        title: 'Developer Portal',
         logo: {
           alt: 'Prem AI logo',
           src: 'img/logo.svg',
@@ -75,7 +75,7 @@ const config = {
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/premAI-io',
+            href: 'https://github.com/premAI-io/prem-app',
             label: 'GitHub',
             position: 'right',
           },

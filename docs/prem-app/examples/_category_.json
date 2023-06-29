@@ -3,6 +3,6 @@
   "position": 4,
   "link": {
     "type": "generated-index",
-    "description": "5 minutes to learn the most important Docusaurus concepts."
+    "description": "Examples on how Prem can be used for your use case using common libraries like LangChain and Llama Index."
   }
 }
