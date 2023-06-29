@@ -5,7 +5,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Prem - Developers',
+  title: 'Prem - Developer Portal',
   tagline: '🤖 Self-Sovereign AI Infrastructure',
   favicon: 'img/favicon.png',
 
