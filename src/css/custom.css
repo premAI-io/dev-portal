@@ -177,22 +177,38 @@ html[data-theme="dark"] {
 [data-theme="dark"] .button__primary {
   background-color: #F49893;
   color: #fff;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 16px;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
 }
 [data-theme="dark"] .button__primary:hover {
   color: #fff;
 }
 
+[data-theme="dark"] .button__outline {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+[data-theme="dark"] .button__outline:hover {
+  border-color: #F49893;
+  background-color: #F49893;
+}
+
 [data-theme="dark"] .heroBanner_src-pages-index-module {
   background: url("../images/bg.png");
+  min-height: 490px;
 }
 [data-theme=dark] blockquote, [data-theme=dark] code {
   background-color: #111;
-}
-
-[data-theme=dark] .footer__copyright {
-  margin-top: 2rem;
 }
 
 [data-theme=dark] .theme-doc-markdown.markdown,

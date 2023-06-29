@@ -3,8 +3,6 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
-
 import styles from './index.module.css';
 
 function HomepageHeader() {
@@ -20,6 +18,11 @@ function HomepageHeader() {
             to="/docs/intro">
             Docs
           </Link>
+          <Link
+            className="button button__outline button--lg"
+            to="/blog">
+            Blog
+          </Link>
         </div>
       </div>
     </header>
@@ -33,9 +36,6 @@ export default function Home(): JSX.Element {
       title={siteConfig.title}
       description="Description will go into a meta tag in <head />">
       <HomepageHeader />
-      <main>
-        <HomepageFeatures />
-      </main>
     </Layout>
   );
 }
