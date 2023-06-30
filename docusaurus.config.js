@@ -79,6 +79,9 @@ const config = {
     ({
       // Replace with your project's social card
       image: 'img/prem-social-card.jpg',
+      metadata: [
+        {name: 'title', content: 'Prem - Developer Portal.'},
+        {name: 'description', content: 'Learn how to Deploy Prem in your Infrastructure or Contribute to Prem Ecosystem.'}],
       navbar: {
         title: 'Developer Portal',
         logo: {
@@ -151,6 +154,7 @@ const config = {
       },
       colorMode: {
         defaultMode: 'dark',
+        disableSwitch: true,
       },
     }),
 };
