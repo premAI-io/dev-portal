@@ -201,10 +201,6 @@ html[data-theme="dark"] {
   background-color: #F49893;
 }
 
-[data-theme="dark"] .heroBanner_src-pages-index-module {
-  background: url("../images/bg.png");
-  min-height: calc(100vh - 300px);
-}
 [data-theme=dark] blockquote, [data-theme=dark] code {
   background-color: #111;
 }
