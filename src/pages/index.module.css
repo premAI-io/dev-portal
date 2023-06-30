@@ -10,6 +10,7 @@
   overflow: hidden;
 }
 [data-theme="dark"] .heroBanner {
+  min-height: calc(100vh - 300px);
   background: url("../images/bg.png"),
     linear-gradient(
       131.09deg,
@@ -18,6 +19,7 @@
     );
     background-size: cover;
 }
+
 @media screen and (max-width: 996px) {
   .heroBanner {
     padding: 2rem;
