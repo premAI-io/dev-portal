@@ -15,7 +15,7 @@ In this tutorial, we will walk you through the process of serving the Falcon 7B 
 
 > NOTE: in order to run Falcon 7B Instrcut model you will need a GPU with at least 16GiB of VRAM. You can use a [Paperspace Cloud](https://www.paperspace.com/gpu-cloud) virtual server or any other cloud provider or your own server with a NVIDIA GPU.
 
-### Step 1: Setting Up Microservice Dependencies
+### Step 1: Setup the Python Server
 
 First, we need to create a requirements.txt file to list all the necessary dependencies. This file will include libraries such as FastAPI, uvicorn, pytest, requests, tqdm, httpx, python-dotenv, tenacity, einops, sentencepiece, accelerate, and xformers.
 
