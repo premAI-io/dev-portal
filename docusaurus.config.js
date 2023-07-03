@@ -149,8 +149,7 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Prem Labs, Inc.`,
       },
       prism: {
-        theme: darkCodeTheme,
-        darkTheme: darkCodeTheme,
+        additionalLanguages: ["ruby", "csharp", "php", "java", "powershell"],
       },
       colorMode: {
         defaultMode: 'dark',
@@ -159,4 +158,13 @@ const config = {
     }),
 };
 
-module.exports = config;
+async function createConfig() {
+  const darkTheme = (await import("./src/utils/prismDark.mjs")).default;
+  // @ts-expect-error: we know it exists, right
+  config.themeConfig.prism.theme = darkTheme;
+  // @ts-expect-error: we know it exists, right
+  config.themeConfig.prism.darkTheme = darkTheme;
+  return config;
+}
+
+module.exports = createConfig;
