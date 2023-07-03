@@ -6,3 +6,383 @@ tags: [llm, self-hosted, prem, open-source, fastapi, docker]
 ---
 
 ![Prem Banner](./banner.png)
+
+<head>
+  <meta name="twitter:image" content="./banner.png"/>
+</head>
+
+In this tutorial, we are going to learn how to serve an LLM with FastAPI and Docker. For this tutorial I created a GitHub repostory with the code to serve `falcon-7b-instruct` already available [here](https://github.com/premAI-io/llm-fastapi-docker-template).
+
+> NOTE: in order to run Falcon 7B Instrcut model you will need a GPU with at least 16GiB of VRAM. You can use a [Paperspace Cloud](https://www.paperspace.com/gpu-cloud) virtual server or any other cloud provider or your own server with a NVIDIA GPU.
+
+### Step 1: Setup Microservice Dependencies
+
+#### 1. Create `requirements.txt` file.
+
+Create a `requirements.txt` file with the following dependencies:
+
+```txt
+fastapi==0.95.0
+uvicorn==0.21.1
+pytest==7.2.2
+requests==2.28.2
+tqdm==4.65.0
+httpx==0.23.3
+python-dotenv==1.0.0
+tenacity==8.2.2
+einops==0.6.1
+sentencepiece==0.1.99
+accelerate>=0.16.0,<1
+xformers==0.0.20
+```
+
+### Step 2: Expose the LLM with FastAPI
+
+#### 1. Create `models.py` file.
+
+The file will contain the model class that will be used to serve the LLM. In order to use Falcon, we are going to use `transforrmers` library that will fetch the model from the HuggingFace Hub.
+
+```python
+import os
+import torch
+
+from typing import List
+from transformers import AutoTokenizer, Pipeline, pipeline
+
+class FalconBasedModel(object):
+    model = None
+    stopping_criteria = None
+
+    @classmethod
+    def generate(
+        cls,
+        messages: list,
+        temperature: float = 0.9,
+        top_p: float = 0.9,
+        n: int = 1,
+        stream: bool = False,
+        max_tokens: int = 256,
+        stop: str = "",
+        **kwargs,
+    ) -> List:
+        message = messages[-1]["content"]
+        return [
+            cls.model(
+                message,
+                max_length=max_tokens,
+                num_return_sequences=n,
+                temperature=temperature,
+                top_p=top_p,
+                eos_token_id=cls.tokenizer.eos_token_id,
+                return_full_text=kwargs.get("return_full_text", False),
+                do_sample=kwargs.get("do_sample", True),
+                stop_sequence=stop[0] if stop else None,
+                stopping_criteria=cls.stopping_criteria(stop, message, cls.tokenizer),
+            )[0]["generated_text"]
+        ]
+
+    @classmethod
+    def get_model(cls) -> Pipeline:
+        if cls.model is None:
+            cls.tokenizer = AutoTokenizer.from_pretrained(
+                os.getenv("MODEL_ID", "tiiuae/falcon-7b-instruct"),
+                trust_remote_code=True,
+            )
+            cls.model = pipeline(
+                tokenizer=cls.tokenizer,
+                model=os.getenv("MODEL_ID", "tiiuae/falcon-7b-instruct"),
+                torch_dtype=torch.bfloat16,
+                trust_remote_code=True,
+                device_map=os.getenv("DEVICE", "auto"),
+            )
+        cls.stopping_criteria = FalconStoppingCriteria
+        return cls.model
+
+```
+
+#### 2. Create `utils.py` file.
+
+Falcon as other generative AI models, requires a stopping criteria to tell the model when to stop generating new tokens. In this case, we are going to use a simple stopping criteria that checks if the target sequence is present in the generated text. The default value is set to be `User:`, but through APIs the developer can provide a custom target sequence.
+
+```python
+
+from typing import List
+
+from transformers import StoppingCriteria
+
+class FalconStoppingCriteria(StoppingCriteria):
+    def __init__(self, target_sequences: List[str], prompt, tokenizer) -> None:
+        self.target_sequences = target_sequences
+        self.prompt = prompt
+        self.tokenizer = tokenizer
+
+    def __call__(self, input_ids, scores, **kwargs) -> bool:
+        if not self.target_sequences:
+            return False
+        # Get the generated text as a string
+        generated_text = self.tokenizer.decode(input_ids[0])
+        generated_text = generated_text.replace(self.prompt, "")
+        # Check if the target sequence appears in the generated text
+        return any(
+            target_sequence in generated_text
+            for target_sequence in self.target_sequences
+        )
+
+    def __len__(self) -> int:
+        return len(self.target_sequences)
+
+    def __iter__(self):
+        yield self
+```
+
+#### 3. Create `routes.py` file.
+
+We are now going to define the endpoints that will be handled by our FastAPI web server. 
+
+```python
+import json
+import os
+import uuid
+from datetime import datetime as dt
+from typing import Any, Dict, Generator, List, Optional, Union
+
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+
+from models import FalconBasedModel as model
+
+
+class ChatCompletionInput(BaseModel):
+    model: str
+    messages: List[dict]
+    temperature: float = 1.0
+    top_p: float = 1.0
+    n: int = 1
+    stream: bool = False
+    stop: Optional[Union[str, List[str]]] = ["User:"]
+    max_tokens: int = 64
+    presence_penalty: float = 0.0
+    frequence_penalty: float = 0.0
+    logit_bias: Optional[dict] = {}
+    user: str = ""
+
+
+class ChatCompletionResponse(BaseModel):
+    id: str = uuid.uuid4()
+    model: str
+    object: str = "chat.completion"
+    created: int = int(dt.now().timestamp())
+    choices: List[dict]
+    usage: dict = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+
+
+router = APIRouter()
+
+
+async def generate_chunk_based_response(body, text) -> Generator[str, Any, None]:
+    yield "event: completion\ndata: " + json.dumps(
+        {
+            "id": str(uuid.uuid4()),
+            "model": body.model,
+            "object": "chat.completion",
+            "choices": [
+                {
+                    "role": "assistant",
+                    "index": 1,
+                    "delta": {"role": "assistant", "content": text},
+                    "finish_reason": "stop",
+                }
+            ],
+            "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
+        }
+    ) + "\n\n"
+    yield "event: done\ndata: [DONE]\n\n"
+
+
+@router.post("/chat/completions", response_model=ChatCompletionResponse)
+async def chat_completions(body: ChatCompletionInput) -> Dict[str, Any]:
+    try:
+        predictions = model.generate(
+            messages=body.messages,
+            temperature=body.temperature,
+            top_p=body.top_p,
+            n=body.n,
+            stream=body.stream,
+            max_tokens=body.max_tokens,
+            stop=body.stop,
+        )
+        if body.stream:
+            return StreamingResponse(
+                generate_chunk_based_response(body, predictions[0]),
+                media_type="text/event-stream",
+            )
+        return ChatCompletionResponse(
+            id=str(uuid.uuid4()),
+            model=os.getenv("MODEL_ID", "tiiuae/falcon-7b-instruct"),
+            object="chat.completion",
+            created=int(dt.now().timestamp()),
+            choices=[
+                {
+                    "role": "assistant",
+                    "index": idx,
+                    "message": {"role": "assistant", "content": text},
+                    "finish_reason": "stop",
+                }
+                for idx, text in enumerate(predictions)
+            ],
+            usage={"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail={"message": str(error)},
+        )
+
+```
+
+#### 4. Create `main.py` file.
+
+```python
+import logging
+from typing import Callable
+
+import uvicorn
+from dotenv import load_dotenv
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routes import router as api_router
+
+from models import FalconBasedModel
+
+def create_start_app_handler(app: FastAPI) -> Callable[[], None]:
+    def start_app() -> None:
+        FalconBasedModel.get_model()
+
+    return start_app
+
+
+def get_application() -> FastAPI:
+    application = FastAPI(title="prem-chat-falcon", debug=True, version="0.0.1")
+    application.include_router(api_router, prefix="/v1")
+    application.add_event_handler("startup", create_start_app_handler(application))
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    return application
+
+
+app = get_application()
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+
+```
+
+### Step 3: Use Docker to build and run the application
+
+#### 1. Create a `download.py` file.
+
+The download script will be called at build time to download the model and cache it in the Docker image.
+
+```python
+import argparse
+import os
+
+import torch
+import transformers
+from tenacity import retry, stop_after_attempt, wait_fixed
+from transformers import AutoTokenizer
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--model", help="Model to download")
+args = parser.parse_args()
+
+print(f"Downloading model {args.model}")
+
+
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
+def download_model() -> None:
+    _ = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
+    _ = transformers.pipeline(
+        model=args.model,
+        torch_dtype=torch.bfloat16,
+        trust_remote_code=True,
+        device_map=os.getenv("DEVICE", "auto"),
+    )
+
+
+download_model()
+
+```
+
+#### 2. Create a `Dockerfile`.
+
+In order to serve an Hugging Face model we will use the official image from Huggingface which has all the necessary dependencies installed.
+
+```dockerfile
+FROM huggingface/transformers-pytorch-gpu:4.28.1
+
+ARG MODEL_ID
+
+WORKDIR /usr/src/app/
+
+COPY requirements.txt ./
+
+RUN pip install --no-cache-dir -r ./requirements.txt --upgrade pip
+
+COPY download.py .
+
+RUN python3 download.py --model $MODEL_ID
+
+COPY . .
+
+ENV MODEL_ID=$MODEL_ID
+
+CMD python3 main.py
+```
+
+#### 4. Create a `.dockerignore` file.
+
+In order to avoid to include any unused file in the build process, we can add a `.dockerignore` file.
+
+```dockerfile
+.editorconfig
+.gitattributes
+.github
+.gitignore
+.gitlab-ci.yml
+.idea
+.pre-commit-config.yaml
+.readthedocs.yml
+.travis.yml
+venv
+.git
+./ml/models/
+.bin
+```
+
+### Step 4: Build and run the application
+
+#### 1. Build the Docker image.
+
+```bash
+docker buildx build --push \
+    --cache-from ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:latest \
+    --file ./Dockerfile \
+    --build-arg="MODEL_ID=tiiuae/falcon-7b-instruct" \
+    --tag ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:latest \
+    --tag ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:0.0.1 \
+    .
+```
+
+#### 2. Run the Docker image.
+
+```bash
+docker run --gpus all -p 8000:8000 ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:latest
+```
