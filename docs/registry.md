@@ -1,13 +1,7 @@
 ---
 sidebar_position: 4
-title: "Registry"
+title: Registry
 ---
-
-<head>
-  <meta name="twitter:image" content="./registry.png"/>
-</head>
-
-# Registry
 
 ![Prem Banner](./registry.png)
 

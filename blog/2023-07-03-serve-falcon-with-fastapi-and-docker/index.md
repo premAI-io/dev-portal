@@ -1,6 +1,6 @@
 ---
 slug: llm-fastapi-docker
-title: How to Serve an LLM with FastAPI and Docker
+title: Serving the Falcon 7B Instruction Model with FastAPI and Docker
 authors: [filippopedrazzinfp]
 tags: [llm, self-hosted, prem, open-source, fastapi, docker]
 ---
@@ -11,11 +11,13 @@ tags: [llm, self-hosted, prem, open-source, fastapi, docker]
   <meta name="twitter:image" content="./banner.png"/>
 </head>
 
-In this tutorial, we are going to learn how to serve an LLM with FastAPI and Docker. For this tutorial I created a GitHub repostory with the code to serve `falcon-7b-instruct` already available [here](https://github.com/premAI-io/llm-fastapi-docker-template).
+In this tutorial, we will walk you through the process of serving the Falcon 7B Instruction model using FastAPI and Docker. The complete code for this tutorial is available on GitHub.
 
 > NOTE: in order to run Falcon 7B Instrcut model you will need a GPU with at least 16GiB of VRAM. You can use a [Paperspace Cloud](https://www.paperspace.com/gpu-cloud) virtual server or any other cloud provider or your own server with a NVIDIA GPU.
 
-### Step 1: Setup Microservice Dependencies
+### Step 1: Setting Up Microservice Dependencies
+
+First, we need to create a requirements.txt file to list all the necessary dependencies. This file will include libraries such as FastAPI, uvicorn, pytest, requests, tqdm, httpx, python-dotenv, tenacity, einops, sentencepiece, accelerate, and xformers.
 
 #### 1. Create `requirements.txt` file.
 
@@ -36,11 +38,15 @@ accelerate>=0.16.0,<1
 xformers==0.0.20
 ```
 
-### Step 2: Expose the LLM with FastAPI
+### Step 2: Expose Falcon 7B Instruct with FastAPI
+
+Next, we will create a `models.py` file to define the model class that will be used to serve the Falcon 7B Instruction model. We will use the `transformers` library to fetch the model from the HuggingFace Hub.
+
+We will also need a `utils.py` file to define the stopping criteria for the Falcon model. This criteria is used to signal the model when to stop generating new tokens.
+
+Finally, we will create a `routes.py` file to define the endpoints that our FastAPI web server will handle. This file will include the logic for generating responses and handling exceptions.
 
 #### 1. Create `models.py` file.
-
-The file will contain the model class that will be used to serve the LLM. In order to use Falcon, we are going to use `transforrmers` library that will fetch the model from the HuggingFace Hub.
 
 ```python
 import os
@@ -99,6 +105,12 @@ class FalconBasedModel(object):
         return cls.model
 
 ```
+
+In the provided code, a class named `FalconBasedModel` is used to encapsulate the functionality related to the Falcon 7B Instruction model. This class-based approach has several advantages:
+
+1. **Encapsulation**: By using a class, we can bundle together the model, its tokenizer, and its stopping criteria into a single unit. This makes the code more organized and easier to understand. It also allows us to hide the internal details of how the model works, exposing only the methods that are necessary for interacting with it.
+
+2. **State Preservation**: Class methods can access and modify the state of an instance of the class. In this case, the `FalconBasedModel` class maintains the state of the model and its tokenizer. This is useful because it allows us to load the model and tokenizer only once, when the `get_model` method is first called, and then reuse them for subsequent calls to the `generate` method. This can significantly improve performance, as loading a model and tokenizer can be computationally expensive operations.
 
 #### 2. Create `utils.py` file.
 
@@ -243,6 +255,16 @@ async def chat_completions(body: ChatCompletionInput) -> Dict[str, Any]:
 
 #### 4. Create `main.py` file.
 
+The `main.py` file is the entry point for our FastAPI application. It is responsible for setting up the application and starting the server.
+
+One important aspect of this file is the `create_start_app_handler` function. This function is designed to be called when the FastAPI application starts up. It creates a function, `start_app`, that is responsible for loading the Falcon 7B Instruction model into memory. This is done by calling the `get_model` method of the `FalconBasedModel` class.
+
+The reason we load the model into memory at startup is to improve the performance of our application. Loading a model is a time-consuming operation. If we were to load the model every time we needed to use it, it would significantly slow down our application. By loading the model at startup, we ensure that it's done only once, no matter how many requests our application needs to handle.
+
+The `start_app` function is then returned and registered as a startup event handler for our FastAPI application. This means that FastAPI will automatically call this function when the application starts up, ensuring that our model is loaded and ready to use.
+
+The rest of the `main.py` file is responsible for setting up the FastAPI application, including registering our API routes and setting up CORS (Cross-Origin Resource Sharing) middleware. Finally, if this file is run directly (i.e., it is the main module), it starts the FastAPI server using uvicorn.
+
 ```python
 import logging
 from typing import Callable
@@ -286,6 +308,12 @@ if __name__ == "__main__":
 
 ### Step 3: Use Docker to build and run the application
 
+To build and run the application, we will first create a `download.py` file. This script will be called at build time to download the model and cache it in the Docker image.
+
+Next, we will create a Dockerfile that uses the official image from HuggingFace, which includes all the necessary dependencies. This Dockerfile will define the steps to build our Docker image.
+
+To avoid including any unused files in the build process, we will also create a `.dockerignore` file.
+
 #### 1. Create a `download.py` file.
 
 The download script will be called at build time to download the model and cache it in the Docker image.
@@ -323,8 +351,6 @@ download_model()
 
 #### 2. Create a `Dockerfile`.
 
-In order to serve an Hugging Face model we will use the official image from Huggingface which has all the necessary dependencies installed.
-
 ```dockerfile
 FROM huggingface/transformers-pytorch-gpu:4.28.1
 
@@ -349,8 +375,6 @@ CMD python3 main.py
 
 #### 4. Create a `.dockerignore` file.
 
-In order to avoid to include any unused file in the build process, we can add a `.dockerignore` file.
-
 ```dockerfile
 .editorconfig
 .gitattributes
@@ -369,6 +393,8 @@ venv
 
 ### Step 4: Build and run the application
 
+Finally, we will build the Docker image using the `docker buildx` command and run it using the `docker run` command. The built image will be tagged and pushed to the GitHub Container Registry.
+
 #### 1. Build the Docker image.
 
 ```bash
@@ -386,3 +412,7 @@ docker buildx build --push \
 ```bash
 docker run --gpus all -p 8000:8000 ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:latest
 ```
+
+### Conclusion
+
+In this tutorial, we have demonstrated how to serve the Falcon 7B Instruction model using FastAPI and Docker. This is a crucial first step in serving a model for production use cases. By following these steps, you can easily serve your own models using FastAPI and Docker.
