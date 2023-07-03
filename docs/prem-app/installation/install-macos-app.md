@@ -6,7 +6,6 @@ sidebar_position: 1
 ---
 # Desktop App for MacoS
 
-
 ### Install Prem on your MacOS
 
 👉 **[Dowload the latest Prem Desktop App](https://github.com/premAI-io/prem-app/releases)**
@@ -16,7 +15,7 @@ sidebar_position: 1
 
 If you installed Docker Desktop for Mac for the first time, from the Whale 🐳 icon in the task bar, go to `Settings` -> `Resources` and increase it to more than 8GB. 
 
-
+![Prem App](./prem-app.png)
 
 :::tip
 Not enough resources? Try out on the live demo instance - [app.prem.ninja](https://app.prem.ninja)
