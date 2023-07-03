@@ -2,7 +2,7 @@
 slug: serving-falcon-7b-fastapi-docker
 title: Serving Falcon 7B Instruct with FastAPI and Docker
 authors: [filippopedrazzinfp]
-tags: [llm, self-hosted, prem, open-source, fastapi, docker]
+tags: [llm, self-hosted, prem, open-source, fastapi, docker, falcon-7b]
 ---
 
 ![Prem Banner](./banner.png)
