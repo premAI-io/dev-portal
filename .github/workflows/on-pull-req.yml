@@ -12,5 +12,8 @@ jobs:
         with:
           node-version: 18
       - run: yarn install --frozen-lockfile
+        
+      - name: Generate OpenAPI docs
+        run: yarn docusaurus gen-api-docs all
       
       - run: yarn build

@@ -15,7 +15,9 @@ The following steps are necessary in order to submit a new service in Prem Regis
 
 Before submitting the service, make sure that the image has been tested with the corresponding Prem Interface. 
 
-> Development Mode To Be Defined. An Idea could be provide external URL in settings.
+In order to do that you will need to run the Prem Daemon with a different 
+
+> We plan to release soon the possibility to upload a manifest from Prem App UI in order for developers to easily test their services without having to run Prem Daemon with a different environment variable.
 
 ### 2. Submit
 

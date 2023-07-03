@@ -1,5 +1,8 @@
 ---
+id: roadmap-daemon
+title: Daemon
+sidebar_label: Daemon
 sidebar_position: 2
 ---
 
-# Daemon
+# 🚧 WIP Daemon
