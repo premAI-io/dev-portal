@@ -7,8 +7,6 @@ title: "Registry"
   <meta name="twitter:image" content="./registry.png"/>
 </head>
 
-# Registry
-
 ![Prem Banner](./registry.png)
 
 The registry contains all the services available in the Prem Ecosystem. At https://github.com/premAI-io/prem-registry/tree/main you can see the latest stable version of the registry. We currently expose a UI as well in order for you to easily visualize all the available models https://registry.premai.io/.
