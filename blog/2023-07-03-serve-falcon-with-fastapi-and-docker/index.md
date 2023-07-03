@@ -114,7 +114,7 @@ In the provided code, a class named `FalconBasedModel` is used to encapsulate th
 
 #### 2. Create `utils.py` file.
 
-Falcon as other generative AI models, requires a stopping criteria to tell the model when to stop generating new tokens. In this case, we are going to use a simple stopping criteria that checks if the target sequence is present in the generated text. The default value is set to be `User:`, but through APIs the developer can provide a custom target sequence.
+Like other generative AI models, Falcon requires a stopping criteria to determine when to cease generating new tokens. We will use a straightforward stopping criteria that checks if the target sequence is present in the generated text. The default value is set to 'User:', but developers can provide a custom target sequence through APIs.
 
 ```python
 
@@ -149,7 +149,7 @@ class FalconStoppingCriteria(StoppingCriteria):
 
 #### 3. Create `routes.py` file.
 
-We are now going to define the endpoints that will be handled by our FastAPI web server. 
+Next, we'll define the endpoints that our FastAPI web server will handle.
 
 ```python
 import json
