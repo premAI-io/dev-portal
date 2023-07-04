@@ -403,7 +403,6 @@ docker build --file ./Dockerfile \
     --tag blog-post/chat-falcon-7b-instruct-gpu:latest \
     --tag blog-post/chat-falcon-7b-instruct-gpu:0.0.1 \
     .
-
 ```
 
 #### 2. Run the Docker image.
