@@ -11,9 +11,16 @@ tags: [llm, self-hosted, prem, open-source, fastapi, docker, falcon-7b]
   <meta name="twitter:image" content="./banner.png"/>
 </head>
 
-In this tutorial, we will walk you through the process of serving the Falcon 7B Instruction model using FastAPI and Docker. The complete code for this tutorial is available on GitHub.
+In this tutorial, we will walk you through the process of serving the Falcon 7B Instruction model using FastAPI and Docker. The complete code for this tutorial is available on our [Prem-Services github repo](https://github.com/premAI-io/prem-services/tree/main/cht-falcon).
 
-> NOTE: in order to run Falcon 7B Instrcut model you will need a GPU with at least 16GiB of VRAM. You can use a [Paperspace Cloud](https://www.paperspace.com/gpu-cloud) virtual server or any other cloud provider or your own server with a NVIDIA GPU.
+> NOTE: in order to run Falcon 7B Instruct model you will need a GPU with at least 16GiB of VRAM. You can use a [Paperspace Cloud](https://www.paperspace.com/gpu-cloud) virtual server or any other cloud provider or your own server with a NVIDIA GPU.
+
+##### If you want to just use the model for inference directly, you can use the following docker command:
+
+```bash
+docker run --gpus all -p 8000:8000 blog-post/chat-falcon-7b-instruct-gpu:latest
+```
+This will ensure that the container has access to the GPU and will expose the API on port 8000. [Learn more](https://github.com/premAI-io/prem-registry/blob/dev/chat-falcon-7b-instruct/README.md).
 
 ### Step 1: Setup the Python Server
 
