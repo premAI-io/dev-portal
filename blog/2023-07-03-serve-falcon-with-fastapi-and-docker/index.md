@@ -5,10 +5,10 @@ authors: [filippopedrazzinfp]
 tags: [llm, self-hosted, prem, open-source, fastapi, docker, falcon-7b]
 ---
 
-![Prem Banner](./banner.png)
+![Prem Banner](./banner.jpg)
 
 <head>
-  <meta name="twitter:image" content="./banner.png"/>
+  <meta name="twitter:image" content="./banner.jpg"/>
 </head>
 
 In this tutorial, we will walk you through the process of serving the Falcon 7B Instruction model using FastAPI and Docker. The complete code for this tutorial is available on GitHub.
