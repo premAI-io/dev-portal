@@ -57,10 +57,10 @@ Make payments with Bitcoin and Cryptocurrency. It's a permissionless infrastruct
 
 ```python
 # Using vicuna-7b-q4
-chat = ChatOpenAI(openai_api_base="http://localhost:8111/api/v1", max_tokens=128)
+chat = ChatOpenAI(openai_api_base="http://localhost:8111/v1", max_tokens=128)
 
 # Using sentence transformers all-MiniLM-L6-v2
-embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8444/api/v1")
+embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8444/v1")
 
 # Using locally running Qdrant
 url = "http://localhost:6333"
@@ -106,10 +106,10 @@ chain.run(question=question, context=context)
 
 ```python
 # Using vicuna-7b-q4
-chat = ChatOpenAI(openai_api_base="http://localhost:8001/api/v1", max_tokens=128)
+chat = ChatOpenAI(openai_api_base="http://localhost:8001/v1", max_tokens=128)
 
 # Using sentence transformers all-MiniLM-L6-v2
-embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8000/api/v1")
+embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8000/v1")
 
 # Using locally running Redis
 url = "redis://localhost:6379"

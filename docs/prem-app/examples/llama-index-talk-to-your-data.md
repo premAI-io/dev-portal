@@ -58,10 +58,10 @@ Make payments with Bitcoin and Cryptocurrency. It's a permissionless infrastruct
 
 ```python
 # Using vicuna-7b-q4
-llm_predictor = LLMPredictor(llm=ChatOpenAI(openai_api_base="http://localhost:8111/api/v1", max_tokens=128))
+llm_predictor = LLMPredictor(llm=ChatOpenAI(openai_api_base="http://localhost:8111/v1", max_tokens=128))
 
 # Using sentence transformers all-MiniLM-L6-v2
-embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8444/api/v1")
+embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8444/v1")
 
 embed_model = LangchainEmbedding(embeddings)
 service_context = ServiceContext.from_defaults(embed_model=embed_model, llm_predictor=llm_predictor)
