@@ -18,7 +18,7 @@ In this tutorial, we will walk you through the process of serving the Falcon 7B 
 ##### If you want to just use the model for inference directly, you can use the following docker command:
 
 ```bash
-docker run --gpus all -p 8000:8000 blog-post/chat-falcon-7b-instruct-gpu:latest
+docker run --gpus all -p 8000:8000 ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:latest
 ```
 This will ensure that the container has access to the GPU and will expose the API on port 8000. [Learn more](https://github.com/premAI-io/prem-registry/blob/dev/chat-falcon-7b-instruct/README.md).
 
