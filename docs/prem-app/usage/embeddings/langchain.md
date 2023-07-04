@@ -20,7 +20,7 @@ os.environ["OPENAI_API_KEY"] = "random-string"
 ### Instantiate the Embeddings Object connecting to the service
 
 ```python
-embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8000/api/v1")
+embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8000/v1")
 text = "Prem is an easy to use open source AI platform."
 query_result = embeddings.embed_query(text)
 doc_result = embeddings.embed_documents([text])
@@ -29,7 +29,7 @@ doc_result = embeddings.embed_documents([text])
 ### Generate the Embeddings
 
 ```python
-embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8000/api/v1")
+embeddings = OpenAIEmbeddings(openai_api_base="http://localhost:8000/v1")
 text = """
 
 Prem is an easy to use open source AI platform. With Prem you can quickly build provacy preserving AI applications.

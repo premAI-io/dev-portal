@@ -20,7 +20,7 @@ os.environ["OPENAI_API_KEY"] = "random-string"
 ### Instantiate the LLM Object
 
 ```python
-chat = ChatOpenAI(openai_api_base="http://localhost:8000/api/v1", max_tokens=128)
+chat = ChatOpenAI(openai_api_base="http://localhost:8000/v1", max_tokens=128)
 ```
 
 ### Send a message to the LLM
