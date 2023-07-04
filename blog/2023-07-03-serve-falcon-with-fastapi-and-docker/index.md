@@ -393,24 +393,23 @@ venv
 
 ### Step 4: Build and run the application
 
-Finally, we will build the Docker image using the `docker buildx` command and run it using the `docker run` command. The built image will be tagged and pushed to the GitHub Container Registry.
+Finally, we will build the Docker image using the `docker build` command and run it using the `docker run` command.
 
 #### 1. Build the Docker image.
 
 ```bash
-docker buildx build --push \
-    --cache-from ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:latest \
-    --file ./Dockerfile \
+docker build --file ./Dockerfile \
     --build-arg="MODEL_ID=tiiuae/falcon-7b-instruct" \
-    --tag ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:latest \
-    --tag ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:0.0.1 \
+    --tag blog-post/chat-falcon-7b-instruct-gpu:latest \
+    --tag blog-post/chat-falcon-7b-instruct-gpu:0.0.1 \
     .
+
 ```
 
 #### 2. Run the Docker image.
 
 ```bash
-docker run --gpus all -p 8000:8000 ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:latest
+docker run --gpus all -p 8000:8000 blog-post/chat-falcon-7b-instruct-gpu:latest
 ```
 
 ### Conclusion
