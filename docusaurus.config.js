@@ -156,6 +156,7 @@ const config = {
         disableSwitch: true,
       },
     }),
+    scripts: [{src: 'https://analytics.prem.ninja/js/script.js', defer: true, 'data-domain': 'dev.premai.io'}],
 };
 
 async function createConfig() {
