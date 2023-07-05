@@ -2,14 +2,14 @@
 slug: chainlit-langchain-prem
 title: Talk to your Data with ChainLit and Langchain
 authors: [tiero, filippopedrazzinfp]
-tags: [llm, self-hosted, prem, open-source, langchain, chainlit, vicuna-7b, redis, vector-store]
+tags: [llm, self-hosted, prem, open-source, langchain, chainlit, vicuna-7b, chroma, vector-store]
 ---
 <head>
   <meta name="twitter:image" content="./banner.jpg"/>
 </head>
 
 
-Build a chatbot that talks to your data with [Prem](https://premai.io) using `LangChain`, `Chainlit`, `Redis` Vector Store and `Vicuna 7B` model, self-hosted on your MacOS laptop.
+Build a chatbot that talks to your data with [Prem](https://premai.io) using `LangChain`, `Chainlit`, `Chroma` Vector Store and `Vicuna 7B` model, self-hosted on your MacOS laptop.
 
 ![ChainLit x Langchain Screenshot](./chainlit-langchain.gif)
 
@@ -42,13 +42,12 @@ For this tutorial we are going to use:
 
 - [ChainLit](https://chainlit.io)
 - [Langchain](https://docs.langchain.com/docs)
-- [Redis](https://redis.io) hosted on the [Prem App](https://premai.io)
 - Vicuna 7B model hosted on [Prem App](https://premai.io)
 
 ### Step 1: Install Python dependencies
 
 ```bash
-pip install chainlit langchain redis tiktoken
+pip install chainlit langchain chromadb tiktoken
 ```
 
 ### Step 2: Create a `app.py` file
@@ -59,7 +58,7 @@ touch app.py
 
 ### Step 3: Add the code!
 
-Please edit accordingly both the Vicuna model and the Redis URL. In this example are respectively `http://localhost:8111/v1` for the Vicuna model and `redis://localhost:6379` for the Redis node.
+Please edit accordingly the Vicuna model and the sentence transformers for Embeddings. In this example it's `http://localhost:8111/v1` and `http://localhost:8444/v1` respectively.
 
 ```python
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -129,14 +128,14 @@ async def init():
     # Create a metadata for each chunk
     metadatas = [{"source": f"{i}-pl"} for i in range(len(texts))]
 
-    # Create a Redis vector store
+    # Create a Chroma vector store
     embeddings = OpenAIEmbeddings(
         openai_api_base="http://localhost:8444/v1"
     )
     docsearch = await cl.make_async(Chroma.from_texts)(
         texts, embeddings, metadatas=metadatas
     )
-    # Create a chain that uses the Redis vector store
+    # Create a chain that uses the Chroma vector store
     chat = ChatOpenAI(
         temperature=0,
         streaming=True,
@@ -194,7 +193,15 @@ async def process_response(res):
     await cl.Message(content=answer, elements=source_elements).send()
 ```
 
-### Step 4: Run the app
+### Step 4: Run the Prem services
+
+In the Prem App running on your laptop, start the following services clicking on `Open` button:
+
+- `Vicuna 7B Q4` under `Chat`
+- `All MiniLM L6 v2` under `Embeddings`
+
+
+### Step 5: Run the app
 
 ```bash
 chainlit run app.py
