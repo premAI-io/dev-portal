@@ -105,21 +105,6 @@ messages = [
 prompt = ChatPromptTemplate.from_messages(messages)
 chain_type_kwargs = {"prompt": prompt}
 
-# combine_prompt_template = """Given the following extracted parts of a long document and a question, create a final answer italian.
-# If you don't know the answer, just say that you don't know. Don't try to make up an answer.
-
-# QUESTION: {question}
-# =========
-# {summaries}
-# =========
-# Answer in Markdown:"""
-# PROMPT = PromptTemplate(
-#     template=combine_prompt_template, input_variables=["summaries", "question"]
-# )
-
-# chain_type_kwargs = {"prompt": PROMPT}
-
-
 @cl.langchain_factory(use_async=True)
 async def init():
     files = None
