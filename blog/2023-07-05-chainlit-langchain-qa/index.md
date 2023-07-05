@@ -48,7 +48,7 @@ For this tutorial we are going to use:
 ### Step 1: Install Python dependencies
 
 ```bash
-pip install chainlit tiktoken langchain
+pip install chainlit langchain redis tiktoken
 ```
 
 ### Step 2: Create a `app.py` file
@@ -59,40 +59,17 @@ touch app.py
 
 ### Step 3: Add the code!
 
-
-#### Import the dependencies
-
-```python
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores.redis import Redis
-from langchain.chains import RetrievalQAWithSourcesChain
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-)
-import os
-import chainlit as cl
-```
-
-#### Set a random API key
-
-```python
-os.environ["OPENAI_API_KEY"] = "random_string"
-```
-
-### Now the fun part!
-
 Please edit accordingly both the Vicuna model and the Redis URL. In this example are respectively `http://localhost:8111/v1` for the Vicuna model and `redis://localhost:6379` for the Redis node.
 
 ```python
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores.redis import Redis
-from langchain.chains import RetrievalQAWithSourcesChain
+from langchain.vectorstores.chroma import Chroma
+from langchain.chains import RetrievalQAWithSourcesChain, LLMChain
+from langchain.chains.question_answering import load_qa_chain
+from langchain.chains.qa_with_sources import load_qa_with_sources_chain
 from langchain.chat_models import ChatOpenAI
+from langchain.prompts import PromptTemplate
 from langchain.prompts.chat import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
@@ -101,10 +78,10 @@ from langchain.prompts.chat import (
 import os
 import chainlit as cl
 
+os.environ["OPENAI_API_KEY"] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
-os.environ["OPENAI_API_KEY"] = "OPENAI_API_KEY"
-
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=100, chunk_overlap=10)
 
 system_template = """Use the following pieces of context to answer the users question.
 If you don't know the answer, just say that you don't know, don't try to make up an answer.
@@ -118,7 +95,6 @@ The answer is foo
 SOURCES: xyz
 `
 
-
 Begin!
 ----------------
 {summaries}"""
@@ -128,6 +104,20 @@ messages = [
 ]
 prompt = ChatPromptTemplate.from_messages(messages)
 chain_type_kwargs = {"prompt": prompt}
+
+# combine_prompt_template = """Given the following extracted parts of a long document and a question, create a final answer italian.
+# If you don't know the answer, just say that you don't know. Don't try to make up an answer.
+
+# QUESTION: {question}
+# =========
+# {summaries}
+# =========
+# Answer in Markdown:"""
+# PROMPT = PromptTemplate(
+#     template=combine_prompt_template, input_variables=["summaries", "question"]
+# )
+
+# chain_type_kwargs = {"prompt": PROMPT}
 
 
 @cl.langchain_factory(use_async=True)
@@ -155,17 +145,24 @@ async def init():
     metadatas = [{"source": f"{i}-pl"} for i in range(len(texts))]
 
     # Create a Redis vector store
-    embeddings = OpenAIEmbeddings()
-    docsearch = await cl.make_async(Redis.from_texts)(
-        texts, embeddings, metadatas=metadatas, redis_url="redis://localhost:6379"
+    embeddings = OpenAIEmbeddings(
+        openai_api_base="http://localhost:8444/v1"
+    )
+    docsearch = await cl.make_async(Chroma.from_texts)(
+        texts, embeddings, metadatas=metadatas
     )
     # Create a chain that uses the Redis vector store
-    chat = ChatOpenAI(temperature=0, streaming=True, openai_api_base="http://localhost:8111/v1")
-    chain = RetrievalQAWithSourcesChain.from_chain_type(
-        llm=chat,
-        chain_type="stuff",
-        retriever=docsearch.as_retriever(),
+    chat = ChatOpenAI(
+        temperature=0,
+        streaming=True,
+        max_tokens=128,
+        openai_api_base="http://localhost:8111/v1"
     )
+
+    chain = RetrievalQAWithSourcesChain.from_chain_type(
+        chat, chain_type="stuff", retriever=docsearch.as_retriever(), chain_type_kwargs=chain_type_kwargs)
+    chain.reduce_k_below_max_tokens = True
+    chain.max_tokens_limit = 128
 
     # Save the metadata and texts in the user session
     cl.user_session.set("metadatas", metadatas)
@@ -173,7 +170,6 @@ async def init():
 
     # Let the user know that the system is ready
     await msg.update(content=f"`{file.name}` processed. You can now ask questions!")
-
 
     return chain
 
@@ -211,7 +207,6 @@ async def process_response(res):
             answer += "\nNo sources found"
 
     await cl.Message(content=answer, elements=source_elements).send()
-
 ```
 
 ### Step 4: Run the app
