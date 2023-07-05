@@ -4,11 +4,6 @@ title: Talk to your Data with ChainLit and Langchain
 authors: [tiero, filippopedrazzinfp]
 tags: [llm, self-hosted, prem, open-source, langchain, chainlit, vicuna-7b, chroma, vector-store]
 ---
-<head>
-  <meta name="twitter:image" content="./banner.jpg"/>
-</head>
-
-
 Build a chatbot that talks to your data with [Prem](https://premai.io) using `LangChain`, `Chainlit`, `Chroma` Vector Store and `Vicuna 7B` model, self-hosted on your MacOS laptop.
 
 ![ChainLit x Langchain Screenshot](./chainlit-langchain.gif)
