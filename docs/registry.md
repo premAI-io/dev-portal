@@ -32,32 +32,37 @@ When you are done with testing and you are confident that your service is ready 
     
     - `manifest.json`: a file specifying all the service metadata.
 
-    ```json
-    {
-        "id": "dolly-v2-12b", // id of the service
-        "name": "Dolly v2 12B", // name of the service
-        "beta": true, // we suggest to put it as true meaning that is a new servcie
-        "description": "Dolly-v2-12b, developed by Databricks, is an instruction-following large language model trained on diverse capability domains. It exhibits remarkable instruction following behavior, surpassing the foundation model it's based on, Pythia-12b. The model is particularly designed for commercial use and its inference can be run on various GPU configurations.", // service short description
-        "documentation": "", // leave it blank, will be populated by the README.md
-        "icon": "", // leave it blank, will be populated by the logo.svg absolute url
-        "modelInfo": {
-            "memoryRequirements": 24576, // amount of memory required in MiB
-            "tokensPerSecond": 18 // if it's a text generative model the amount of tokens per second generated
-        },
-        "interfaces": [
-            "chat" // list of interfaces the service is compatible with
-        ],
-        "dockerImages": {
-            "gpu": { // where the docker image should run: gpu | cpu
-                "size": 40689160223,
-                "image": "ghcr.io/premai-io/chat-dolly-v2-12b-gpu:1.0.2"
-            }
-        },
-        "defaultPort": 8000, // try to keep 8000
-        "defaultExternalPort": 8333 // put a random number here
-    }
-    ```
-    
+        ```json
+        {
+            "id": "dolly-v2-12b", // id of the service
+            "name": "Dolly v2 12B", // name of the service
+            "beta": true, // we suggest to put it as true meaning that is a new servcie
+            "description": "Dolly-v2-12b, developed by Databricks, is an instruction-following large language model trained on diverse capability domains. It exhibits remarkable instruction following behavior, surpassing the foundation model it's based on, Pythia-12b. The model is particularly designed for commercial use and its inference can be run on various GPU configurations.", // service short description
+            "documentation": "", // leave it blank, will be populated by the README.md
+            "icon": "", // leave it blank, will be populated by the logo.svg absolute url
+            "modelInfo": {
+                "memoryRequirements": 24576, // amount of memory required in MiB
+                "tokensPerSecond": 18 // if it's a text generative model the amount of tokens per second generated
+            },
+            "interfaces": [
+                "chat" // list of interfaces the service is compatible with
+            ],
+            "dockerImages": {
+                "gpu": { // where the docker image should run: gpu | cpu
+                    "size": 40689160223,
+                    "image": "ghcr.io/premai-io/chat-dolly-v2-12b-gpu:1.0.2"
+                }
+            },
+            "defaultPort": 8000, // try to keep 8000
+            "defaultExternalPort": 8333 // put a random number here
+        }
+        ```
+        > The docker `image size` can be computed by running `docker image size: docker inspect -f "{{.Size}}" image-name:image-version`.
+
+        > The model `memoryRequirements` can be estimated by running `docker stats` at prediction time and monitoring the memory used by the model.
+
+        > In order to get modelInfo `tokensPerSecond` you can run several predictions, compute the number of generated tokens and divide it by the inference time. Finally by taking the average tokenPerSecond you have an estimation of the tokensPerSecond. 
+
     - `logo.svg`: a logo of your service in svg format 256x256.
     - `README.md`: documentation of the service, how to use it, tips and tricks, license. Provide all the insights and the information necessary to exploit the model at maximum capacity.
 
