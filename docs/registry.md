@@ -57,7 +57,7 @@ When you are done with testing and you are confident that your service is ready 
             "defaultExternalPort": 8333 // put a random number here
         }
         ```
-        > The docker `image size` can be computed by running `docker image size: docker inspect -f "{{.Size}}" image-name:image-version`.
+        > The docker `image size` can be computed by running `docker inspect -f "{{.Size}}" image-name:image-version`.
 
         > The model `memoryRequirements` can be estimated by running `docker stats` at prediction time and monitoring the memory used by the model.
 
