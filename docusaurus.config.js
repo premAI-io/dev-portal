@@ -40,7 +40,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/premAI-io/dev-portal',
+            'https://github.com/premAI-io/dev-portal/blob/main/',
             docLayoutComponent: "@theme/DocPage",
             docItemComponent: "@theme/ApiItem" // Derived from docusaurus-theme-openapi-docs
         },
