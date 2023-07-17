@@ -12,6 +12,18 @@ Install everything needed to run Prem on Ubuntu/Debian server
 ```bash
 wget -q https://get.prem.ninja/install.sh -O install.sh; sudo bash ./install.sh
 ```
+
+## Uninstall Prem 
+
+If you want to uninstall Prem, you can run the following commands
+
+```bash
+# navigate to prem directory
+cd ~/prem/
+
+# stop docker-compose services
+docker-compose down
+```
 ------
 
 If you encounter issues or you want to build the Prem App docker image inside your Linux server
