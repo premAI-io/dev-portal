@@ -64,33 +64,34 @@ const config = {
         id: "apiDocs",
         docsPluginId: "classic",
         config: {
-          daemon: { 
+          daemon: {
             specPath: "https://daemon.prem.ninja/openapi.json",
             outputDir: "docs/prem-daemon/api",
           },
-          chat: { 
+          chat: {
             specPath: "swagger/chat.json",
             outputDir: "docs/prem-app/usage/chat/api",
           },
-          embeddings: { 
+          embeddings: {
             specPath: "swagger/embeddings.json",
             outputDir: "docs/prem-app/usage/embeddings/api",
           },
-          diffuser: { 
+          diffuser: {
             specPath: "swagger/diffuser.json",
             outputDir: "docs/prem-app/usage/diffuser/api",
           },
-          audioToText: { 
+          audioToText: {
             specPath: "swagger/audio-to-text.json",
             outputDir: "docs/prem-app/usage/audio-to-text/api",
           },
-          textToAudio: { 
+          textToAudio: {
             specPath: "swagger/text-to-audio.json",
             outputDir: "docs/prem-app/usage/text-to-audio/api",
           },
         }
       },
-    ]
+    ],
+    require.resolve("@cmfcmf/docusaurus-search-local"),
   ],
   themes: ["docusaurus-theme-openapi-docs"],
 
