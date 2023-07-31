@@ -80,6 +80,10 @@ const config = {
             specPath: "swagger/diffuser.json",
             outputDir: "docs/prem-app/usage/diffuser/api",
           },
+          upscaler: { 
+            specPath: "swagger/upscaler.json",
+            outputDir: "docs/prem-app/usage/upscaler/api",
+          },
           audioToText: { 
             specPath: "swagger/audio-to-text.json",
             outputDir: "docs/prem-app/usage/audio-to-text/api",
