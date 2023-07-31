@@ -64,9 +64,29 @@ const config = {
         id: "apiDocs",
         docsPluginId: "classic",
         config: {
-          daemon: { // Note: petstore key is treated as the <id> and can be used to specify an API doc instance when using CLI commands
-            specPath: "https://daemon.prem.ninja/openapi.json", // Path to designated spec file
-            outputDir: "docs/prem-daemon/api", // Output directory for generated .mdx docs
+          daemon: { 
+            specPath: "https://daemon.prem.ninja/openapi.json",
+            outputDir: "docs/prem-daemon/api",
+          },
+          chat: { 
+            specPath: "swagger/chat.json",
+            outputDir: "docs/prem-app/usage/chat/api",
+          },
+          embeddings: { 
+            specPath: "swagger/embeddings.json",
+            outputDir: "docs/prem-app/usage/embeddings/api",
+          },
+          diffuser: { 
+            specPath: "swagger/diffuser.json",
+            outputDir: "docs/prem-app/usage/diffuser/api",
+          },
+          audioToText: { 
+            specPath: "swagger/audio-to-text.json",
+            outputDir: "docs/prem-app/usage/audio-to-text/api",
+          },
+          textToAudio: { 
+            specPath: "swagger/text-to-audio.json",
+            outputDir: "docs/prem-app/usage/text-to-audio/api",
           },
         }
       },

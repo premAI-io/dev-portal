@@ -1,0 +1,42 @@
+---
+id: health-v-1-get
+title: "Health"
+description: "Health"
+sidebar_label: "Health"
+hide_title: true
+hide_table_of_contents: true
+api: {"operationId":"health_v1__get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"title":"HealthResponse","required":["status"],"type":"object","properties":{"status":{"title":"Status","type":"boolean"}}}}}}},"description":"Health","method":"get","path":"/v1/","info":{"title":"Prem Text to Audio","version":"0.0.1"},"postman":{"name":"Health","description":{"type":"text/plain"},"url":{"path":["v1",""],"host":["{{baseUrl}}"],"query":[],"variable":[]},"header":[{"key":"Accept","value":"application/json"}],"method":"GET"}}
+sidebar_class_name: "get api-method"
+info_path: docs/prem-app/usage/text-to-audio/api/prem-text-to-audio
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiDemoPanel/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiDemoPanel/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Health</h1>
+
+<MethodEndpoint method={"get"} path={"/v1/"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"docs/prem-app/usage/text-to-audio/api/prem-text-to-audio"}></SecuritySchemes>
+
+
+
+Health
+
+## Request
+
+<div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Successful Response
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"status"} required={true} schemaName={"Status"} qualifierMessage={undefined} schema={{"title":"Status","type":"boolean"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"status\": true\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
