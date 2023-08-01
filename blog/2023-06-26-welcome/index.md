@@ -3,8 +3,10 @@ slug: hello-prem
 title: Hello Prem!
 authors: [filippopedrazzinfp]
 tags: [llm, self-hosted, prem, open-source, welcome]
+description: "Hello, I am Filippo and I am currently contributing to Prem."
+image: "./banner.png"
 ---
-
+<!-- truncate -->
 ![Prem Banner](./banner.png)
 
 Hello, I am Filippo and I am currently contributing to Prem.

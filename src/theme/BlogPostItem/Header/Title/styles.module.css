@@ -1,0 +1,23 @@
+.title {
+  font-size: 3rem;
+}
+
+/**
+  Blog post title should be smaller on smaller devices
+**/
+@media (max-width: 576px) {
+  .title {
+    font-size: 2rem;
+  }
+}
+
+/* Blog Index page */
+.titleIndex {
+  font-size: 2.3rem;
+}
+@media (max-width: 576px) {
+  .titleIndex {
+    font-size: 1.6rem;
+  }
+}
+
