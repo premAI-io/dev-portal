@@ -44,6 +44,8 @@
   --ifm-color-gray-300: #ededed;
   --ifm-pagination-nav-color-hover: #ff7e7b;
   --ifm-breadcrumb-item-background-active: transparent;
+  --aa-primary-color-rgb: 246, 194, 133 !important;
+  --aa-muted-color-rgb: 246, 194, 133 !important;
 }
 
 [data-theme="dark"] a:not(.button):hover {

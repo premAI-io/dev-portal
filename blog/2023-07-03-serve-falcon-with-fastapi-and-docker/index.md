@@ -12,6 +12,7 @@ tags: [llm, self-hosted, prem, open-source, fastapi, docker, falcon-7b]
 </head>
 
 In this tutorial, we will walk you through the process of serving the Falcon 7B Instruction model using FastAPI and Docker. The complete code for this tutorial is available on [GitHub](https://github.com/premAI-io/llm-fastapi-docker-template).
+<!--truncate-->
 
 > NOTE: in order to run Falcon 7B Instruct model you will need a GPU with at least 16GiB of VRAM. You can use a [Paperspace Cloud](https://www.paperspace.com/gpu-cloud) virtual server or any other cloud provider or your own server with a NVIDIA GPU.
 

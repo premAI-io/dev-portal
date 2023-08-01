@@ -39,16 +39,14 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/premAI-io/dev-portal/blob/main/',
+          editUrl: 'https://github.com/premAI-io/dev-portal/blob/main/',
             docLayoutComponent: "@theme/DocPage",
             docItemComponent: "@theme/ApiItem" // Derived from docusaurus-theme-openapi-docs
         },
         blog: {
           showReadingTime: true,
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/premAI-io/dev-portal',
+          editUrl: 'https://github.com/premAI-io/dev-portal/blob/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -64,19 +62,19 @@ const config = {
         id: "apiDocs",
         docsPluginId: "classic",
         config: {
-          daemon: { 
+          daemon: {
             specPath: "https://daemon.prem.ninja/openapi.json",
             outputDir: "docs/prem-daemon/api",
           },
-          chat: { 
+          chat: {
             specPath: "swagger/chat.json",
             outputDir: "docs/prem-app/usage/chat/api",
           },
-          embeddings: { 
+          embeddings: {
             specPath: "swagger/embeddings.json",
             outputDir: "docs/prem-app/usage/embeddings/api",
           },
-          diffuser: { 
+          diffuser: {
             specPath: "swagger/diffuser.json",
             outputDir: "docs/prem-app/usage/diffuser/api",
           },
@@ -84,17 +82,18 @@ const config = {
             specPath: "swagger/upscaler.json",
             outputDir: "docs/prem-app/usage/upscaler/api",
           },
-          audioToText: { 
+          audioToText: {
             specPath: "swagger/audio-to-text.json",
             outputDir: "docs/prem-app/usage/audio-to-text/api",
           },
-          textToAudio: { 
+          textToAudio: {
             specPath: "swagger/text-to-audio.json",
             outputDir: "docs/prem-app/usage/text-to-audio/api",
           },
         }
       },
-    ]
+    ],
+    require.resolve("@cmfcmf/docusaurus-search-local"),
   ],
   themes: ["docusaurus-theme-openapi-docs"],
 
