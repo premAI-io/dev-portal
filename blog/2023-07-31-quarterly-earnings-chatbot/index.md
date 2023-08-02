@@ -21,7 +21,7 @@ Usually, companies have an earnings call live with their investors and then publ
 
 ## Using AI to process financial data
 
-There is an open-source AI model called Whisper Tiny that can take audio and convert it into text in a matter of seconds. This model is small enough to run on your CPU, yet it has the speed and accuracy to process even the largest of audio files.
+The open-source AI model [Whisper Tiny](https://doi.org/10.48550/arXiv.2212.04356) can convert audio into text. This model is small enough to run on your CPU and can process hours of audio quickly (in seconds) and accurately.
 
 Going back to the earnings call, we can use Whisper Tiny to convert the audio into text which we can process later on. We can then build a chatbot to "chat" with the text related to a company's finances. 
 
@@ -32,10 +32,10 @@ Using this technology, investors would be able to ask the chatbot questions like
 Here are the steps required to build this app:
 1. Run the Whisper Tiny model locally
 2. Send the audio file to the model and get the converted text
-3. Use Langchain to break the text into chunks
-4. Store the chunks inside a vector database
+3. Split the text into chunks using [LangChain](https://github.com/langchain-ai/langchain)
+4. Store the chunks inside a vector database provided by [Weaviate](https://github.com/weaviate/weaviate)
 5. Query the data stored in the vector database
-6. Chat with the data using an open-source LLM
+6. Chat with the data using an open-source LLM, in this case [Vicuna](https://vicuna.lmsys.org)
 
 There are quite a few technologies here and it can be difficult to run them manually. This is where Prem AI comes in. Prem AI allows people to easily deploy open-source tools and models without having to deal with any infrastructure.
 
@@ -46,13 +46,19 @@ We can run the Whisper Tiny model, Weaviate vector database, open-source embeddi
 
 <hr />
 
-## Step 1: Install python dependencies
+## Step 1: Project setup
 
 First make sure you have Prem running locally and set up the instances for Whisper Tiny, Weaviate, Vicuna, and All MiniLM. 
 
+There are a variety of services you can use from Prem such as vector databases and open-source LLMs. The way you interact with each service is mostly the same. For example, if you wanted to use the Vicuna 7B LLM you would first install the prem app and on the dashboard you would see the Vicuna 7B model.
+
+Each service runs as a seperate docker container and they can easily be started or stopped via the desktop app.
+
+If you click on a service that is running, you can see the documentation on how to use that service as well as some information about the docker container. Notice the `Default External Port`, which tells us which port our service is running on. This will be useful later on in the tutorial when we connect to each of these services via an API endpoint.
+
 Next, let's install some Python dependencies:
 
-```txt
+```sh
 pip install langchain openai streamlit
 ```
 
@@ -90,6 +96,8 @@ def convert_audio_to_text(audio_file_path) -> str:
 The `convert_audio_to_text` function takes in a path to an audio file as an argument and then used the OpenAI Whisper Tiny model running locally to transcribe the audio to text.
 
 You can call the `convert_audio_to_text` function and give it the path to the mp3 file if you want to test out the function.
+
+I have a sample MP3 file which is a shortened version of an Nvidia earnings call which you can download at this [repo](https://github.com/htrivedi99/prem-blogs/blob/main/quarterly-earnings-chatbot/nvidia_earnings_call.mp3)
 
 ## Step 3: Chunk the text
 
@@ -208,13 +216,15 @@ f"Question: {user_input}"
 Vicuna-7B is able to answer the question to the best of its ability given the context.
 
 To run your Streamlit app use the following command:
-```txt
+```sh
 streamlit run whisper_test.py
 ```
 
 If your Python script is called something other than whisper_test.py then replace it in the command above.
 
-If all goes well, you should see your Streamlit app running in your web browser!
+After running the command above, you should see your Streamlit app running in your web browser!
+
+If you would like to see the full code for this tutorial check out this [Github Repo](https://github.com/htrivedi99/prem-blogs/tree/main/quarterly-earnings-chatbot)
 
 <hr />
 
