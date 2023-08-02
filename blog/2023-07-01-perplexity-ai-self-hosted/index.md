@@ -3,7 +3,10 @@ slug: perplexity-ai-self-hosted
 title: Build a Perplexity AI clone on Prem
 authors: [tiero]
 tags: [llm, ai, self-hosted, prem, open-source, perplexity, paperspace, dolly]
+description: "Build your own Perplexity AI clone with Prem using the `Dolly v2 12B` model, self-hosted on Paperspace Cloud virtual server."
+image: "./screenshot.png"
 ---
+<!--truncate-->
 
 <head>
   <meta name="twitter:image" content="./screenshot.png"/>
@@ -12,7 +15,6 @@ tags: [llm, ai, self-hosted, prem, open-source, perplexity, paperspace, dolly]
 Build your own Perplexity AI clone with [Prem](https://premai.io) using the `Dolly v2 12B` model, self-hosted on [Paperspace Cloud](https://www.paperspace.com/gpu-cloud) virtual server.
 
 ![Clarity AI Screenshot](./screenshot.png)
-<!--truncate-->
 
 ### What is Perplexity AI?
 
