@@ -1,21 +1,26 @@
 # 🤖 Prem Developer Portal
 
+Source code for <https://dev.premai.io>.
+
 ## Contributing
+
+You can open this repository in a [Dev Container](https://containers.dev), or alternatively follow the instructions below.
 
 ### Run the Web Server locally
 
-```bash
-# install the necessary dependencies
-yarn install 
+Requires [yarn](https://yarnpkg.com/getting-started/install).
 
-# run the webserver
-yarn start
+```sh
+yarn install  # install the necessary dependencies
+yarn start    # run the webserver
 ```
 
 ### Generate OpenAPI Documentation
 
-In order to include the services OpenAPI documentation in the Developer Portal, we leverage [docusaurus-openapi-docs](https://github.com/PaloAltoNetworks/docusaurus-openapi-docs) plugin. Follow the documentation [here](https://github.com/PaloAltoNetworks/docusaurus-openapi-docs#configuring-docusaurusconfigjs-plugin-and-theme-usage) in order to add new specifications and then generate the doc using the following command:
+The [docusaurus-openapi-docs](https://github.com/PaloAltoNetworks/docusaurus-openapi-docs) plugin is used to include the `services` OpenAPI documentation. Run this before `yarn start`:
 
-```bash
-yarn docusaurus gen-api-docs <id>
+```sh
+yarn docusaurus gen-api-docs all
 ```
+
+[New specifications can be added](https://github.com/PaloAltoNetworks/docusaurus-openapi-docs#configuring-docusaurusconfigjs-plugin-and-theme-usage) and the docs regenerated using `yarn docusaurus gen-api-docs <id>`.
