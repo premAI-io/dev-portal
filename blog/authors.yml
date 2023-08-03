@@ -3,9 +3,18 @@ tiero:
   title: Bitcoin wizard
   url: https://github.com/tiero
   image_url:  https://github.com/tiero.png
-
 filippopedrazzinfp:
-  name: Filippo Pedrazzini 
+  name: Filippo Pedrazzini
   title: Core contributor @ PremAI
   url: https://github.com/filopedraz
   image_url: https://github.com/filopedraz.png
+het:
+  name: Het Trivedi
+  title: Developer Advocate
+  url: https://github.com/htrivedi99
+  image_url: https://github.com/htrivedi99.png
+casperdcl:
+  name: Casper da Costa-Luis
+  title: Core contributor @ PremAI
+  url: https://github.com/casperdcl
+  image_url: https://github.com/casperdcl.png
