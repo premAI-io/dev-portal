@@ -3,12 +3,15 @@ slug: quarterly-earnings-chatbot
 title: Build A Q&A Chatbot For Quarterly Earnings Calls
 authors: [het, casperdcl]
 tags: [llm, self-hosted, prem, open-source, fintech, langchain, vicuna-7b, weaviate, vector-store, streamlit]
+description: "Build a chatbot to answer questions about audio recordings with Prem using LangChain, Whisper audio transcription, All MiniLM embeddings, Weaviate vector store and Vicuna 7B LLM, self-hosted on your laptop"
+image: "./banner.png"
 ---
+<!--truncate-->
 
 ![Prem Banner](./banner.png)
 
 <head>
-  <meta name="twitter:image" content="./banner.jpg"/>
+  <meta name="twitter:image" content="./banner.png"/>
 </head>
 
 ## Financial Use Case
@@ -47,11 +50,11 @@ Simply [install & run the Prem App](https://dev.premai.io/docs/category/installa
 
 Note that there are many other services you could select from instead (e.g. a larger *Chat* model if your GPU memory is large enough).
 
-<img src="./prem_dashboard.png"  width="800" height="400" />
+![](./prem_dashboard.png) <!-- width: 800 height: 400-->
 
 Each service runs in a Docker container, and can be started/stopped via the app.
 
-<img src="./prem_service_details.png"  width="350" height="500" />
+![](prem_service_details.png) <!--width: 350, height: 500-->
 
 Click on a running service to see usage docs and Docker container info. Notice the `Default External Port`, which we will use below to interact with each of these services via their API endpoints.
 
