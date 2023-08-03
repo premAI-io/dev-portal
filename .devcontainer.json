@@ -1,0 +1,12 @@
+// format details: https://aka.ms/devcontainer.json
+{
+"name": "dev.premai.io",
+"image": "node:18",
+"customizations": {"vscode": {"extensions": [
+    "DavidAnson.vscode-markdownlint"
+    "esbenp.prettier-vscode",
+    "streetsidesoftware.code-spell-checker"
+]}},
+"postCreateCommand": "yarn install && yarn docusaurus gen-api-docs all && yarn start",
+"portsAttributes": {"3000": {"label": "Webserver", "onAutoForward": "notify"}}
+}
