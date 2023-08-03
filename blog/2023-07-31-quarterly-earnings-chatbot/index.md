@@ -54,7 +54,11 @@ There are a variety of services you can use from Prem such as vector databases a
 
 Each service runs as a seperate docker container and they can easily be started or stopped via the desktop app.
 
+<img src="./prem_dashboard.png"  width="800" height="400" />
+
 If you click on a service that is running, you can see the documentation on how to use that service as well as some information about the docker container. Notice the `Default External Port`, which tells us which port our service is running on. This will be useful later on in the tutorial when we connect to each of these services via an API endpoint.
+
+<img src="./prem_service_details.png"  width="350" height="500" />
 
 Next, let's install some Python dependencies:
 
