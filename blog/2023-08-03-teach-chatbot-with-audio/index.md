@@ -135,7 +135,7 @@ Here's how this works:
 
 ## Step 6: Combine Everything in a ChatBot GUI
 
-We'll select an `mp3` audio file to use via a Streamlit UI. In this case, we'll use the audio from [NVIDIA's recent quarterly earnings call](https://github.com/htrivedi99/prem-blogs/blob/main/quarterly-earnings-chatbot/nvidia_earnings_call.mp3).
+We'll select an `mp3` audio file to use via a Streamlit UI. In this case, we'll use [this audio snippet](https://github.com/htrivedi99/prem-blogs/blob/main/quarterly-earnings-chatbot/nvidia_earnings_call.mp3) extracted from [NVIDIA's recent Q4 2023 earnings call](https://www.youtube.com/watch?v=7qU_wzzYNJU).
 
 Then we'll use the functions defined above to support an LLM-driven chatbot!
 
