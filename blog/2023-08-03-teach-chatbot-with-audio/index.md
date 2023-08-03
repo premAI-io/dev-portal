@@ -74,11 +74,11 @@ import openai
 from langchain.embeddings import OpenAIEmbeddings
 
 # URL API endpoints obtained from the Prem App UI
+openai.api_key = os.environ["OPENAI_API_KEY"] = "random-string"
 whisper_url = "http://127.0.0.1:10111/v1" # audio-to-text
 embeddings = OpenAIEmbeddings(openai_api_base="http://127.0.0.1:8444/v1")
 weaviate_url = "http://127.0.0.1:8080" # vector store
 vicuna_api = "http://127.0.0.1:8111/v1" # LLM
-openai.api_key = os.environ["OPENAI_API_KEY"] = "random-string"
 
 def convert_audio_to_text(audio_file_path) -> str:
     openai.api_base = whisper_url
