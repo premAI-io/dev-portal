@@ -1,6 +1,6 @@
 ---
-slug: quarterly-earnings-chatbot
-title: Build A Q&A Chatbot For Quarterly Earnings Calls
+slug: teach-chatbot-with-audio
+title: Teach a Q&A Chatbot with Audio Recordings
 authors: [het, casperdcl]
 tags: [llm, self-hosted, prem, open-source, fintech, langchain, vicuna-7b, weaviate, vector-store, streamlit]
 description: "Build a chatbot to answer questions about audio recordings with Prem using LangChain, Whisper audio transcription, All MiniLM embeddings, Weaviate vector store and Vicuna 7B LLM, self-hosted on your laptop"
@@ -184,7 +184,7 @@ The [full source code for this tutorial is available here](https://github.com/ht
 
 ## Conclusion
 
-We took a practical use case -- extracting information from an earnings call -- and applied state-of-the-art AI techniques to convert the audio stream into text, and load the text into a vector database. We ask questions about the text in natural (human) language, and used a vector similarity search and an LLM to answer these questions.
+We took a practical use case -- extracting information from an earnings call -- and applied state-of-the-art AI techniques to convert the audio stream into text, and load the text into a vector database. We asked questions about the text in natural (human) language, and used a vector similarity search and an LLM to answer these questions.
 
 The applications for this project go well beyond just earnings calls, as any kind of audio can be processed. For example, you can summarise a video recording from a meeting, lecture, or even YouTube.
 
