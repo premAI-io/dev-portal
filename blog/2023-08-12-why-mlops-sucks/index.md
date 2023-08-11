@@ -1,7 +1,7 @@
 ---
 slug: 'why-mlops-sucks'
 title: Why MLOps sucks?
-authors: [biswaroop1547]
+authors: [biswaroop]
 tags: [llm, prem, performance, mlops, onnx, tensorrt]
 description: 'Navigating the Challenges of Improving Inference Latency for New Large Models through ONNX and TensorRT Optimization.'
 image: './banner.jpeg'
