@@ -1,5 +1,5 @@
 ---
-slug: ''
+slug: 'why-mlops-sucks'
 title: Why MLOps sucks?
 authors: [biswaroop1547]
 tags: [llm, prem, performance, mlops, onnx, tensorrt]
