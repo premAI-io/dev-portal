@@ -1,10 +1,10 @@
 ---
-slug:
+slug: ''
 title: Why MLOps sucks?
 authors: [biswaroop1547]
 tags: [llm, prem, performance, mlops, onnx, tensorrt]
-description: "Navigating the Challenges of Improving Inference Latency for New Large Models through ONNX and TensorRT Optimization."
-image: "./banner.jpeg"
+description: 'Navigating the Challenges of Improving Inference Latency for New Large Models through ONNX and TensorRT Optimization.'
+image: './banner.jpeg'
 ---
 <!--truncate-->
 
