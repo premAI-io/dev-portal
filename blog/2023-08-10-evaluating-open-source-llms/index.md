@@ -8,46 +8,45 @@ image: "./banner.jpeg"
 ---
 <!--truncate-->
 
-![Prem Banner](./banner.jpeg)
-<div align="center"><em>Image created using Stable Diffusion</em></div>
+![Banner](./banner.jpeg)
+:robot_face: *image generated using the [Stable Diffusion](https://registry.premai.io/detail.html?service=stable-diffusion-2-1)*
 
+<head>
+  <meta name="twitter:image" content="./banner.png"/>
+</head>
 
-## Introduction
-
-By now, it seems like every month a new open-source Large Language Model(LLM) comes along and breaks all of the records held by previous models. 
+By now, it seems like every month a new open-source Large Language Model (LLM) comes along and breaks all of the records held by previous models.
 
 The pace at which generative AI is progressing is so quick that people are spending most of their time catching up rather than building useful tools. There is a lot of confusion in the open-source community as to which LLM is the best. Businesses want to use the best open-source LLM for their use case. But how do you know which one is the best?
 
 ```txt
-Emily: You know, I've been thinking, we should definitely consider using one of these 
+Emily: You know, I've been thinking, we should definitely consider using one of these
 large language models for our project.
 Ethan: True, but which one should we go for?
-Olivia: Maybe we should try MPT! 
+Olivia: Maybe we should try MPT!
 It's known for its amazing fluency and coherence in generated text.
-Emily: Yeah, but wait, Falcon looks cool too. 
+Emily: Yeah, but wait, Falcon looks cool too.
 It claims to handle a wide range of language tasks effortlessly.
 Ethan: And LLama is available for commercial use, so that's something to consider.
 ```
 
-## How LLMs Are Benchmarked
+## LLM Benchmarks
 
 Most people that play around with LLMs can tell how well a model performs just by the output they're getting. But how can you numerically measure an LLM's performance?
 
-Currently, the way LLMs are benchmarked is by testing them on a variety of datasets. The [hugging face leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) has a nice visual representation of how well open-source LLMs perform on 4 standard datasets and where they rank in the leaderboard. 
+Currently, the way LLMs are benchmarked is by testing them on a variety of datasets. The [hugging face leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) has a nice visual representation of how well open-source LLMs perform on 4 standard datasets and where they rank in the leaderboard.
 
-Whenever a new LLM is open-sourced, it is tested on prompts from datasets like *ARC*, *HellaSwag*, *MMLU*, and *TruthfulQA*. The output of the LLM is compared with the ground truth value which is what is actually expected. For example, the MMLU dataset contains a question with multiple-choice answers.
+Whenever a new LLM is open-sourced, it is tested on prompts from datasets like [*ARC*](#arc), [*HellaSwag*](#hellaswag), [*MMLU*](#mmlu), and [*TruthfulQA*](#truthfulqa). The output of the LLM is compared with the ground truth value which is what is actually expected. For example, the MMLU dataset contains a question with multiple-choice answers.
 
 ![](./diagram_1.jpg)
 
-From the image above, you can see the LLM predicted the answer is C, but in reality the correct answer is B. In this case, the LLM would lose a point for its performance. 
+From the image above, you can see the LLM predicted the answer is C, but in reality the correct answer is B. In this case, the LLM would lose a point for its performance.
 
 There are other datasets where the answer is not clear. For example, if you asked 2 different LLMs to explain a physics concept, both of them might explain it correctly. In this case, human feedback is used to identify which LLM response has higher quality.
 
-## Digging deeper into open-source LLM benchmarks
-
 Since the hugging face leaderboard is a good starting place to get an idea of how open-source LLMs stack up, we'll take a closer look at the benchmarks they use.
 
-## 1. [ARC](https://allenai.org/data/arc)
+### [ARC](https://allenai.org/data/arc)
 
 The ARC dataset consists of school-grade multiple-choice science questions. The dataset contains questions for different grade levels along with various difficulties.
 
@@ -56,22 +55,22 @@ Q: "Which technology was developed most recently?" (A) Cellular Phone. (B) Telev
 
 For this dataset, accuracy is the metric that is measured. The LLM has to simply pick one of the choices and the output is compared to the correct answer.
 
-## 2. [HellaSwag](https://rowanzellers.com/hellaswag/)
+### [HellaSwag](https://rowanzellers.com/hellaswag/)
 
 This dataset contains common-sense reasoning questions. These questions are trivial for humans, we've achieved 95% on this dataset, but some of the finest LLMs struggle with this dataset. Here's an example from the dataset:
 
 *"Then, the man writes over the snow covering the window of a car, and a woman wearing winter clothes smiles. Then, ".*
 
-A) , the man adds wax to the windshield and cuts it. 
-B) , a person board a ski lift, while two men supporting the head of the person wearing winter clothes snow as the we girls sled. 
-C) , the man puts on a christmas coat, knitted with netting. 
+A) , the man adds wax to the windshield and cuts it.
+B) , a person board a ski lift, while two men supporting the head of the person wearing winter clothes snow as the we girls sled.
+C) , the man puts on a christmas coat, knitted with netting.
 D) , the man continues removing the snow on his car.
 
 Similar to ARC, accuracy is the metric used to measure performance.
 
-## 3. [MMLU(Massive Multi-task Language Understanding)](https://arxiv.org/pdf/2009.03300.pdf)
+### [MMLU](https://arxiv.org/pdf/2009.03300.pdf)
 
-This dataset contains multiple choice questions for 57 tasks including elementary mathematics, US history, computer science, law, and more. The goal is to measure a model's multitask accuracy. 
+The Massive Multi-task Language Understanding (MMLU) dataset contains multiple choice questions for 57 tasks including elementary mathematics, US history, computer science, law, and more. The goal is to measure a model's multitask accuracy.
 
 Dataset Example:
 
@@ -79,7 +78,7 @@ Dataset Example:
 
 (A) 4 (B) 3 C) 2 (D) 1
 
-## 4. [TruthfulQA](https://github.com/sylinrl/TruthfulQA/blob/main/TruthfulQA.csv)
+### [TruthfulQA](https://github.com/sylinrl/TruthfulQA/blob/main/TruthfulQA.csv)
 
 This test is used to gauge the model's ability to generate factual answers for common trivia questions. Often there are misconceptions when answering popular questions that the model may have picked up during training.
 
@@ -109,12 +108,11 @@ One thing to note is that this is just a subset of the benchmarks used to evalua
 
 Often times the numbers that you see from benchmarks don't seem to translate into real-world performance. For example, there might be a benchmark that shows that the Llama 70B model is superior to ChatGPT at some particular task. In reality, ChatGPT might be better even though the benchmark says otherwise.
 
-The reason is that the datasets used for these benchmarks are limited and do not cover all of the possible inputs an LLM could receive. Truth is, models developed by OpenAI, Cohere, and Anthropic are way larger in size (100B + parameters). On top of that, they are trained on way more data compared to their open-source counterparts. 
+The reason is that the datasets used for these benchmarks are limited and do not cover all of the possible inputs an LLM could receive. Truth is, models developed by OpenAI, Cohere, and Anthropic are way larger in size (100B + parameters). On top of that, they are trained on way more data compared to their open-source counterparts.
 
 So, the key takeaway is to use benchmarks as a starting point for evaluating LLMs, but not rely on them entirely. You want to focus on your specific LLM use case and understand the requirements for your project. If you don't have sensitive data or need full control over your LLM, using ChatGPT could allow you to build quickly while having top-tier performance and no infra setup.
 
-On the other hand, if privacy and security are absolutely required, then you can host your own open-source LLM. Along with using the benchmarks, you'll have to experiment with a handful of LLMs yourself to get a better idea of how each performs on live data. 
-
+On the other hand, if privacy and security are absolutely required, then you can host your own open-source LLM. Along with using the benchmarks, you'll have to experiment with a handful of LLMs yourself to get a better idea of how each performs on live data.
 
 ## Reinforcement Learning
 
