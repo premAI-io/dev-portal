@@ -14,15 +14,13 @@ image: './banner.png'
   <meta name="twitter:image" content="./banner.png"/>
 </head>
 
-## Introduction
-
 MLOps has become an essential part of deploying and maintaining machine learning models. As model complexity increases exponentially, the need for effective MLOps practices has become super urgent. This post doesn’t fully solve something but rather acts like a walk-through for all frustrations I’ve experienced along 2-3 days of trial and errors while trying to improve Inference latency of few of the current most famous LLMs.
 
 By sharing my challenges and insights, I hope to contribute to a community that openly discusses and shares solutions for MLOps challenges. And showing that releasing Open-Sourced weights solves only 50% of the work.
 
 ## The Promise of Faster Inference
 
-My first target here was since [Llama 2 released](http://registry.premai.io/detail.html?service=llama-2-7b-chat), somehow I wanted to convert it into [ONNX](https://onnx.ai/) format, which would allow me to do ONNX → [TensorRT](https://developer.nvidia.com/tensorrt-getting-started) conversion and finally serve it using [Triton Inference Server](https://developer.nvidia.com/triton-inference-server). From other benchmarks online ([1](https://github.com/kentaroy47/benchmark-FP32-FP16-INT8-with-TensorRT), [2](https://medium.com/@abhismatrix/speeding-deep-learning-inference-by-upto-20x-6c0c0f6fba81)) it’s visible that TensorRT can give even 2x/3x/nx boost to latency based on which precision is set without hurting quality much.
+My first target here was since [Llama 2 released](http://registry.premai.io/detail.html?service=llama-2-7b-chat), somehow I wanted to convert it into [ONNX](https://onnx.ai/) format, which would allow me to do ONNX → [TensorRT](https://developer.nvidia.com/tensorrt-getting-started) conversion and finally serve it using [Triton Inference Server](https://developer.nvidia.com/triton-inference-server). From other benchmarks online [[1](https://github.com/kentaroy47/benchmark-FP32-FP16-INT8-with-TensorRT), [2](https://medium.com/@abhismatrix/speeding-deep-learning-inference-by-upto-20x-6c0c0f6fba81)] it’s visible that TensorRT can give even 2x/3x/nx boost to latency based on which precision is set without hurting quality much.
 
 TensorRT optimizes the model network by combining layers and optimizing kernel selection for improved latency, throughput, power efficiency and memory consumption. If the application specifies, it will additionally optimize the network to run in lower precision, further increasing performance and reducing memory requirements.
 
@@ -32,9 +30,9 @@ There were some other considerations also:
 
 - [Text Generation Inference](https://huggingface.github.io/text-generation-inference/) - Recently they came up with [a new license](https://twitter.com/jeffboudier/status/1685001126780026880?s=20), which wasn’t optimal for my purpose. Though I can use releases till 0.9 but let's keep that for some other day.
 - [vLLM](https://github.com/vllm-project/vllm) - Heard from peers that they saw a big decrease in output quality, which I’d have to explore.
-- [GGML](https://github.com/ggerganov/ggml) - GPU inference is not possible for ggml model formats currently, and for my purpose GPU usage was kinda required for very low latency. But again surely something I’d look into deeper some other day.
+- [GGML](https://github.com/ggerganov/ggml) - GPU inference is not possible for `ggml` model formats currently, and for my purpose GPU usage was kinda required for very low latency. But again surely something I’d look into deeper some other day.
 
-## Initial Efforts on Converting Models and Tools Used
+## Model Conversion Errors
 
 Let’s start with **Llama 2 7B chat**,
 
@@ -43,7 +41,7 @@ Let’s start with **Llama 2 7B chat**,
 
 Now I considered two options for converting huggingface models to ONNX format:
 
-### Using `torch.onnx.export` from Pytorch
+### `torch.onnx.export` gibberish text
 
 Let’s write a function which will load tokenizer, model and export it into ONNX format with required parameters:
 
@@ -74,8 +72,7 @@ def export_to_onnx(
 
     model = AutoModelForCausalLM.from_pretrained(pretrained_model_name_or_path, config=config).to("cuda:0")
     model.eval()
-		# why?
-		# tips: https://huggingface.co/docs/transformers/v4.31.0/en/model_doc/llama2#
+    # tips: https://huggingface.co/docs/transformers/v4.31.0/en/model_doc/llama2
     tokenizer.add_special_tokens({"pad_token": "<pad>"})
     model.resize_token_embeddings(len(tokenizer))
     model.config.pad_token_id = tokenizer.pad_token_id
@@ -154,7 +151,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 output_file = 'llama-2-7b-onnx/model.onnx'
 
 ort_session = ort.InferenceSession(str(output_file))
-    
+
 tokenizer = AutoTokenizer.from_pretrained("llama-2-7b-chat-hf", use_fast=True)
 tokenizer.add_special_tokens({"pad_token": "<pad>"})
 
@@ -179,15 +176,24 @@ this generates really random outputs e.g:
 
 Which is mostly due to not having a proper decoding strategy ([greedy search](https://docs.cohere.com/docs/controlling-generation-with-top-k-top-p#1-pick-the-top-token-greedy-decoding), [beam search](https://machinelearningmastery.com/beam-search-decoder-natural-language-processing/), etc) while generating tokens. This will be somewhat resolved when we use `optimum` for export and inference as it by default comes with decoding strategies.
 
-### Using `optimum-cli` tool by Huggingface.
+### `optimum-cli` gibberish text and `tensorrt` slowness
 
-[Refer](https://huggingface.co/docs/transformers/serialization#export-to-onnx) Optimum docs.
+From the [Optimum docs](https://huggingface.co/docs/transformers/serialization#export-to-onnx), we can do:
 
-We can do: `optimum-cli export onnx --model ./llama-2-7b-chat-hf/ --task text-generation --framework pt --opset 16 --sequence_length 1024 --batch_size 1  --device cuda --fp16 llama-2-7b-optimum/` to save onnx format for llama-2-7b-chat to `./llama-2-7b-optimum` directory locally - this takes few minutes to generate and if you don’t want to use GPU for this conversion then remove `--device cuda` from the above command.
+We can do:
+
+```sh
+optimum-cli export onnx \
+  --model ./llama-2-7b-chat-hf/ --task text-generation --framework pt \
+  --opset 16 --sequence_length 1024 --batch_size 1 --device cuda --fp16 \
+  llama-2-7b-optimum/
+```
+
+to save onnx format for llama-2-7b-chat to `./llama-2-7b-optimum` directory locally - this takes few minutes to generate and if you don’t want to use GPU for this conversion then remove `--device cuda` from the above command.
 
 it’ll generate:
 
-```bash
+```
 llama-2-7b-optimum
  ├── config.json
  ├── Constant_162_attr__value
@@ -249,30 +255,40 @@ We can see that the ONNX Llama 2 7b model is ~25% faster compared to huggingface
 
 okay cool but now there's a new issue with tensorrt that’s raised [here](https://github.com/huggingface/optimum/issues/1278)
 
-### Dolly V2 7B by Databricks
+### `optimum-cli` segfaults
 
-Next let’s try with Dolly-v2 7B parameter model released by Databricks. Who’s equivalent optimum-cli command for ONNX conversion would be:
+Next let’s try with Dolly-v2 7B parameter model released by Databricks. The equivalent `optimum-cli` command for ONNX conversion would be:
 
-`optimum-cli export onnx --model 'databricks/dolly-v2-7b' --task text-generation --framework pt --opset 17 --sequence_length 1024 --batch_size 1 --fp16 --device cuda dolly_optimum`
+```sh
+optimum-cli export onnx \
+  --model 'databricks/dolly-v2-7b' --task text-generation --framework pt \
+  --opset 17 --sequence_length 1024 --batch_size 1 --fp16 --device cuda \
+  dolly_optimum
+```
 
 It uses around 17GB of my gpu vram, working fine till the whole conversion but ending with seg-fault 😢
 
-```bash
+```json
 ======= Diagnostic Run torch.onnx.export version 2.1.0.dev20230804+cu118 =======
 verbose: False, log level: 40
 ======================= 0 NONE 0 NOTE 0 WARNING 0 ERROR ========================
 
 Saving external data to one file...
-2023-08-09 20:59:33.334484259 [W:onnxruntime:, session_state.cc:1169 VerifyEachNodeIsAssignedToAnEp] Some nodes were not assigned to the preferred execution providers which may or may not have an negative impact on performance. e.g. ORT explicitly assigns shape related ops to CPU to improve perf.
-2023-08-09 20:59:33.334531829 [W:onnxruntime:, session_state.cc:1171 VerifyEachNodeIsAssignedToAnEp] Rerunning with verbose output on a non-minimal build will show node assignments.
-Asked a sequence length of 1024, but a sequence length of 1 will be used with use_past == True for `input_ids`.
+2023-08-09 20:59:33.334484259 [W:onnxruntime:, session_state.cc:1169 VerifyEachNodeIsAssignedToAnEp]
+Some nodes were not assigned to the preferred execution providers which may or may not
+have an negative impact on performance. e.g. ORT explicitly assigns shape related ops
+to CPU to improve perf.
+2023-08-09 20:59:33.334531829 [W:onnxruntime:, session_state.cc:1171 VerifyEachNodeIsAssignedToAnEp]
+Rerunning with verbose output on a non-minimal build will show node assignments.
+Asked a sequence length of 1024, but a sequence length of 1 will be used with
+use_past == True for `input_ids`.
 Post-processing the exported models...
 Segmentation fault (core dumped)
 ```
 
 But I am still able to see all model files are converted and saved under `dolly_optimum` directory as provided in above command.
 
-From few quick searches I could see ([1](https://github.com/huggingface/transformers/issues/21360), [2](https://github.com/huggingface/optimum/issues/798)) people faced similar seg fault issues while export and it still seems like an ongoing issue.
+From few quick searches I could see people faced similar seg fault issues while export and it still seems like an ongoing issue ([#21360](https://github.com/huggingface/transformers/issues/21360), [#798](https://github.com/huggingface/optimum/issues/798)).
 
 After quickly running some benchmark benchmark and comparing ONNX format with its raw pytorch variant `databricks/dolly-v2-7b` we could see the following results:
 
@@ -280,13 +296,15 @@ After quickly running some benchmark benchmark and comparing ONNX format with it
     - ONNX inference latency: `8.2s`
     - Huggingface version latency: `5.2s`
 
-We see that ONNX version is actually ~35% slower compared to normal version (smh!)
+We see that ONNX version is actually ~35% slower compared to normal version :angry:
 
-To try making things faster we can try out optimizing our converted onnx dolly model 
+To try making things faster we can try out optimizing our converted onnx dolly model
 
-`optimum-cli onnxruntime optimize -O4 --onnx_model ./dolly_optimum/ -o dolly_optimized/`
+```sh
+optimum-cli onnxruntime optimize -O4 --onnx_model ./dolly_optimum/ -o dolly_optimized/
+```
 
-These being different optimizations available ([learn more](https://huggingface.co/docs/optimum/main/en/onnxruntime/usage_guides/optimization)):
+These being [different optimizations available](https://huggingface.co/docs/optimum/main/en/onnxruntime/usage_guides/optimization):
 
 - `-O1`: basic general optimizations.
 - `-O2`: basic and extended general optimizations, transformers-specific fusions.
@@ -295,10 +313,14 @@ These being different optimizations available ([learn more](https://huggingface.
 
 but we see again something similar:
 
-```bash
+```json
 Optimizing model...
-2023-08-09 21:57:33.285164830 [W:onnxruntime:, session_state.cc:1169 VerifyEachNodeIsAssignedToAnEp] Some nodes were not assigned to the preferred execution providers which may or may not have an negative impact on performance. e.g. ORT explicitly assigns shape related ops to CPU to improve perf.
-2023-08-09 21:57:33.285198682 [W:onnxruntime:, session_state.cc:1171 VerifyEachNodeIsAssignedToAnEp] Rerunning with verbose output on a non-minimal build will show node assignments.
+2023-08-09 21:57:33.285164830 [W:onnxruntime:, session_state.cc:1169 VerifyEachNodeIsAssignedToAnEp]
+Some nodes were not assigned to the preferred execution providers which may or may not
+have an negative impact on performance. e.g. ORT explicitly assigns shape related ops
+to CPU to improve perf.
+2023-08-09 21:57:33.285198682 [W:onnxruntime:, session_state.cc:1171 VerifyEachNodeIsAssignedToAnEp]
+Rerunning with verbose output on a non-minimal build will show node assignments.
 Segmentation fault
 ```
 
@@ -308,7 +330,7 @@ For `-O1` it works and optimized model gets saved but there’s literally no per
 
 While for `-O3` & `-O4` it gives seg-fault (above).
 
-### Stable-Diffusion 2.1
+### `torch.onnx.export` gibberish images
 
 Let’s benchmark first how much time [**stable-diffusion-2-1**](https://huggingface.co/stabilityai/stable-diffusion-2-1) takes, for that spin an `ipython` shell and we can do:
 
@@ -327,18 +349,21 @@ Now let’s go for its ONNX conversion, to start we can take [this fulfilling sc
 
 The command I am gonna run is (assuming you have the script saved as `convert_sd_onnx.py`
 
-`python convert_sd_onnx.py --model_path stabilityai/stable-diffusion-2-1 --output_path sd_onnx/ --opset 16 --fp16`
+```sh
+python convert_sd_onnx.py --model_path stabilityai/stable-diffusion-2-1 \
+  --output_path sd_onnx/ --opset 16 --fp16
+```
 
 Note: if one faces any issue with a particular operator not being supported under above `opset` number then upgrade your pytorch version locally to be nightly:
 
-```bash
+```sh
 pip uninstall torch
 pip install --pre torch --index-url https://download.pytorch.org/whl/nightly/cu121
 ```
 
 once the conversion happens, onnx model will be saved under `sd_onnx` directory with the following structure:
 
-```bash
+```
 sd_onnx/
 ├── model_index.json
 ├── scheduler
@@ -379,10 +404,9 @@ And we get the latency to be `**1.34 s**` , which is **2.5x faster** than its no
 We will now try to serialize the ONNX version of Unet model to a TensorRT compatible engine format. When building the engine, the builder object selects the most optimized kernels for the chosen platform and configuration. Building the engine from a network definition file can be time consuming and should not be repeated each time we need to perform inference unless the model,  platform, or configuration changes. You can transform the format of the engine after generation and store on disk for reuse later, known as [serializing the engine](https://docs.nvidia.com/deeplearning/sdk/tensorrt-developer-guide/index.html#serial_model_c). Deserializing occurs when you load the engine from disk into memory and continue to use it for inference.
 
 
-![https://developer.nvidia.com/blog/speed-up-inference-tensorrt/](tensorrt.png)
-*Source: https://developer.nvidia.com/blog/speed-up-inference-tensorrt/*
+[![https://developer.nvidia.com/blog/speed-up-inference-tensorrt/](tensorrt.png)](https://developer.nvidia.com/blog/speed-up-inference-tensorrt)
 
-Now first we need to setup tensorRT properly and make sure to follow [this support table](https://onnxruntime.ai/docs/execution-providers/TensorRT-ExecutionProvider.html#requirements) while trying to set it up (it’s a bit painful actually, similar to cuda/cudnn). Else if you just want an easy way out then it should be fine to use NVIDIA’s [`nvcr.io/nvidia/tensorrt:22.12-py3`](http://nvcr.io/nvidia/tensorrt:22.12-py3) docker image as a base or use this dockerfile to create a container to run our next steps on:
+Now first we need to setup tensorRT properly and make sure to follow [this support table](https://onnxruntime.ai/docs/execution-providers/TensorRT-ExecutionProvider.html#requirements) while trying to set it up (it’s a bit painful actually, similar to [cuda/cudnn](https://nvcr.io/cuda/cudnn)). Else if you just want an easy way out then it should be fine to use NVIDIA’s [`nvcr.io/nvidia/tensorrt:22.12-py3`](https://nvcr.io/nvidia/tensorrt:22.12-py3) docker image as a base or use this dockerfile to create a container to run our next steps on:
 
 ```docker
 FROM nvcr.io/nvidia/tensorrt:22.12-py3
@@ -402,7 +426,7 @@ Once you have the container running, exec inside it and for serialization we can
 ```python
 import torch
 import tensorrt as trt
-import os, sys, argparse 
+import os, sys, argparse
 import numpy as np
 import pycuda.driver as cuda
 import pycuda.autoinit
@@ -438,15 +462,15 @@ config = TRT_BUILDER.create_builder_config()
 profile = TRT_BUILDER.create_optimization_profile()
 
 # set input, latent and other shapes required by the layers
-profile.set_shape("sample", latents_shape, latents_shape, latents_shape) 
-profile.set_shape("encoder_hidden_states", embed_shape, embed_shape, embed_shape) 
-profile.set_shape("timestep", timestep_shape, timestep_shape, timestep_shape) 
+profile.set_shape("sample", latents_shape, latents_shape, latents_shape)
+profile.set_shape("encoder_hidden_states", embed_shape, embed_shape, embed_shape)
+profile.set_shape("timestep", timestep_shape, timestep_shape, timestep_shape)
 config.add_optimization_profile(profile)
 
 config.set_flag(trt.BuilderFlag.FP16)
 # serialization happens here
 serialized_engine = TRT_BUILDER.build_serialized_network(network, config)
-        
+
 ## save engine
 with open(engine_filename, 'wb') as f:
     f.write(serialized_engine)
@@ -455,9 +479,10 @@ print(f'Engine is saved to {engine_filename}')
 
 If everything goes well, at the end you’d see something similar in the logs:
 
-```bash
-. . .
-[08/11/2023-07:51:11] [TRT] [I] [MemUsageChange] TensorRT-managed allocation in building engine: CPU +571, GPU +1652, now: CPU 571, GPU 1652 (MiB)
+```json
+...
+[08/11/2023-07:51:11] [TRT] [I] [MemUsageChange] TensorRT-managed allocation
+in building engine: CPU +571, GPU +1652, now: CPU 571, GPU 1652 (MiB)
 Engine is saved to unet.trt
 ```
 
@@ -479,6 +504,8 @@ from PIL import Image
 from transformers import CLIPTextModel, CLIPTokenizer
 from diffusers import AutoencoderKL, LMSDiscreteScheduler
 import time
+from trt_model import TRTModel
+
 
 class TrtDiffusionModel:
     def __init__(self):
@@ -580,10 +607,10 @@ black image         |  noise image
 
 which shows that something’s going wrong here, and changing to different tensor shapes (defined above) also doesn’t help fix noisy or no generations. It’s a big blocker for me to proceed with stable-diffusion 2.1 converted into TensorRT engine format for inference. Though it was possible for few other variants of Stable Diffusion coming from [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 
-With some time searching about this, found [this](https://github.com/AUTOMATIC1111/stable-diffusion-webui/issues/5503#issuecomment-1341495770) relevant issue with Stable Diffusion giving out black images. It mentions two ways i.e:
+With some time searching about this, found a relevant issue with Stable Diffusion giving out black images [#5503](https://github.com/AUTOMATIC1111/stable-diffusion-webui/issues/5503#issuecomment-1341495770). It mentions two ways i.e:
 
 - Do conversions of this model in > fp16 - which I did but it made no difference and I was still getting noise or black images only.
-- Using xformers but currently for onnx conversion we need pytorch nightly since there’s scaled_dot_product_attention operator which isn’t supported to export in normal pytorch but only through nightly - refer to [this](https://github.com/pytorch/pytorch/issues/97262) issue.
+- Using `xformers` but currently for `onnx` conversion we need `pytorch` nightly which [recently added a `scaled_dot_product_attention` operator](https://github.com/pytorch/pytorch/issues/97262).
 
 ## Conclusion
 
