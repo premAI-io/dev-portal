@@ -21,11 +21,14 @@ By now, it seems like every month a new open-source Large Language Model(LLM) co
 The pace at which generative AI is progressing is so quick that people are spending most of their time catching up rather than building useful tools. There is a lot of confusion in the open-source community as to which LLM is the best. Businesses want to use the best open-source LLM for their use case. But how do you know which one is the best?
 
 ```txt
-Person 1: You know, I've been thinking, we should definitely consider using one of these large language models for our project.
-Person 2: True, but which one should we go for?
-Person 3: Maybe we should try MPT! It's known for its amazing fluency and coherence in generated text.
-Person 1: Yeah, but wait, Falcon looks cool too. It claims to handle a wide range of language tasks effortlessly.
-Person 2: And LLama is available for commercial use, so that's something to consider.
+Emily: You know, I've been thinking, we should definitely consider using one of these 
+large language models for our project.
+Ethan: True, but which one should we go for?
+Olivia: Maybe we should try MPT! 
+It's known for its amazing fluency and coherence in generated text.
+Emily: Yeah, but wait, Falcon looks cool too. 
+It claims to handle a wide range of language tasks effortlessly.
+Ethan: And LLama is available for commercial use, so that's something to consider.
 ```
 
 ## How LLMs Are Benchmarked
@@ -110,24 +113,35 @@ Often times the numbers that you see from benchmarks don't seem to translate int
 
 The reason is that the datasets used for these benchmarks are limited and do not cover all of the possible inputs an LLM could receive. Truth is, models developed by OpenAI, Cohere, and Anthropic are way larger in size (100B + parameters). On top of that, they are trained on way more data compared to their open-source counterparts. 
 
-So, the key takeaway is to use benchmarks as a starting point for evaluating LLMs, but not rely on them entirely.
+So, the key takeaway is to use benchmarks as a starting point for evaluating LLMs, but not rely on them entirely. You want to focus on your specific LLM use case and understand the requirements for your project. If you don't have sensitive data or need full control over your LLM, using ChatGPT could allow you to build quickly while having top-tier performance and no infra setup.
+
+On the other hand, if privacy and security are absolutely required, then you can host your own open-source LLM. Along with using the benchmarks, you'll have to experiment with a handful of LLMs yourself to get a better idea of how each performs on live data. 
 
 
 ## Reinforcement Learning
 
-Open-source models don't have the same size as ChatGPT or GPT-4, but even the larger 70B parameter models can have issues related to bias and fairness. When GPT-3 was first released it has racial biases, gender biases, and religious biases. The origin of these biases was the data these models were trained on.
+Open-source models don't have the same size as ChatGPT or GPT-4, but even the larger 70B parameter models can have issues related to bias and fairness. When GPT-3 was first released it has [racial biases, gender biases](https://aclanthology.org/2021.nuse-1.5/), and [religious biases](https://hai.stanford.edu/news/rooting-out-anti-muslim-bias-popular-language-model-gpt-3). The origin of these biases was the data these models were trained on.
 
 It's nearly impossible to remove all biases from a dataset, but at the same time, we don't want the models to pick up on them. How do we fix this problem?
 
-This is where *Reinforcement Learning with Human Feedback(RLHF)* comes in. With RLHF, a human ranks the outputs of an LLM from best to worst. Each time the human ranks the outputs, they are essentially training a reinforcement model. This reinforcement model is then used to "reward" the model when it generates an output that is "good" and penalizes the model when the output is "bad".
+This is where [*Reinforcement Learning with Human Feedback(RLHF)*](https://wandb.ai/ayush-thakur/RLHF/reports/Understanding-Reinforcement-Learning-from-Human-Feedback-RLHF-Part-1--VmlldzoyODk5MTIx) comes in. With RLHF, a human ranks the outputs of an LLM from best to worst. Each time the human ranks the outputs, they are essentially training a reinforcement model. This reinforcement model is then used to "reward" the model when it generates an output that is "good" and penalizes the model when the output is "bad".
 
 Using RLHF, the hidden biases a model has picked up from the training dataset can be removed, hence improving the model's accuracy.
+
+Pros:
+- Increased efficiency: Using RLHF, the feedback that is provided helps guide the LLM toward the optimal solution. With only a few examples, a fine-tuned model with RLHF can easily outperform the baseline model on certain tasks.
+- Better Performance: The feedback that a human provides also impacts the quality of the output generated by an LLM. By showing more examples of the desired outcomes, the LLM improves the generated output to match what is expected.
+
+Cons:
+- Lack of scalability: RLHF depends on human feedback to improve the performance of the model. So, in this case, the human is the bottleneck. Providing feedback to an LLM can be a time-consuming process and it can't be automated. Because of this, RLHF is considered a slow and tedious process.
+- Inconsistent quality: Different people may be providing feedback for the same model and those people may have differing opinions on what should be the desired output. People make decisions based on their knowledge and preference, but too many differing opinions can confuse the model and lead to performance degradation.
+- Human errors: People make mistakes. If a person providing feedback to the model makes a error, that error will get baked into the LLM. With more feedback examples, the chances of getting more errors increases.
 
 ## Picking the right LLM
 
 Even though the LLMs on Hugging Face are benchmarked on the same datasets, each LLM excels at a particular task. To put it simply, even though Llama-2 currently dominates the open-source leaderboard, it does not mean that it's the best open-source LLM.
 
-The LLM you pick should depend on the type of problem you are solving. If you're trying to generate code to make API calls, maybe you want to use Gorilla. If you want to design a conversational chatbot, maybe try one of the Falcon models. Each LLM has its own advantages and disadvantages, and only through experimentation can you begin to understand which LLM is right for your use case.
+The LLM you pick should depend on the type of problem you are solving. If you're trying to generate code to make API calls, maybe you want to use [Gorilla](https://registry.premai.io/detail.html?service=gorilla-falcon-7b). If you want to design a conversational chatbot, maybe try one of the [Falcon](https://registry.premai.io/detail.html?service=falcon-7b-instruct) models. Each LLM has its own advantages and disadvantages, and only through experimentation can you begin to understand which LLM is right for your use case.
 
 ## Conclusion
 
