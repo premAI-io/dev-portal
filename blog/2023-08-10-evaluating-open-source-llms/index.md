@@ -10,6 +10,17 @@ image: "./banner.jpeg"
 
 ![Prem Banner](./banner.jpeg)
 
+<style>
+figcaption {
+  text-align: center;
+  font-style: italic;
+}
+</style>
+
+<figure>
+    <figcaption>Image created using Stable Diffusion</figcaption> 
+</figure>
+
 <head>
   <meta name="twitter:image" content="./banner.png"/>
 </head>
