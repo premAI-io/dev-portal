@@ -9,21 +9,8 @@ image: "./banner.jpeg"
 <!--truncate-->
 
 ![Prem Banner](./banner.jpeg)
+<div align="center"><em>Image created using Stable Diffusion</em></div>
 
-<style>
-figcaption {
-  text-align: center;
-  font-style: italic;
-}
-</style>
-
-<figure>
-    <figcaption>Image created using Stable Diffusion</figcaption> 
-</figure>
-
-<head>
-  <meta name="twitter:image" content="./banner.png"/>
-</head>
 
 ## Introduction
 
