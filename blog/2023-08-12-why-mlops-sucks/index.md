@@ -4,11 +4,15 @@ title: Why MLOps sucks?
 authors: [biswaroop]
 tags: [llm, prem, performance, mlops, onnx, tensorrt]
 description: 'Navigating the Challenges of Improving Inference Latency for New Large Models through ONNX and TensorRT Optimization.'
-image: './banner.jpeg'
+image: './banner.png'
 ---
 <!--truncate-->
 
-![Prem Banner](./banner.jpeg)
+<!-- ![Prem Banner](./banner.png) -->
+<figure class="image">
+  <img src="./banner.png" alt="{{ include.description }}">
+  <figcaption>generated via <a href="http://registry.premai.io/detail.html?service=stable-diffusion-xl-with-refiner">stable-diffusion-xl </a></figcaption>
+</figure>
 
 <head>
   <meta name="twitter:image" content="./banner.png"/>
