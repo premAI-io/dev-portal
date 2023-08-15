@@ -8,12 +8,8 @@ image: './banner.png'
 ---
 <!--truncate-->
 
-<!-- ![Prem Banner](./banner.png) -->
-<figure class="image">
-  <img src="./banner.png" alt="{{ include.description }}">
-  <figcaption>generated via <a href="http://registry.premai.io/detail.html?service=stable-diffusion-xl-with-refiner">stable-diffusion-xl </a></figcaption>
-</figure>
-
+![Banner](./banner.png)
+<div align="center"><em>generated via <a href="http://registry.premai.io/detail.html?service=stable-diffusion-xl-with-refiner">stable-diffusion-xl</a></em></div>
 <head>
   <meta name="twitter:image" content="./banner.png"/>
 </head>
