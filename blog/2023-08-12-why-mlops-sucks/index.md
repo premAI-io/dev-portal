@@ -22,7 +22,7 @@ By sharing my challenges and insights, I hope to contribute to a community that 
 
 ## The Promise of Faster Inference
 
-My first target here was since Llama 2 released, somehow I wanted to convert it into ONNX format, which would allow me to do ONNX → TensorRT conversion and finally serve it using TritonServer. From other benchmarks online ([1](https://github.com/kentaroy47/benchmark-FP32-FP16-INT8-with-TensorRT), [2](https://medium.com/@abhismatrix/speeding-deep-learning-inference-by-upto-20x-6c0c0f6fba81)) it’s visible that TensorRT can give even 2x/3x/nx boost to latency based on which precision is set without hurting quality much.
+My first target here was since [Llama 2 released](http://registry.premai.io/detail.html?service=llama-2-7b-chat), somehow I wanted to convert it into [ONNX](https://onnx.ai/) format, which would allow me to do ONNX → [TensorRT](https://developer.nvidia.com/tensorrt-getting-started) conversion and finally serve it using [Triton Inference Server](https://developer.nvidia.com/triton-inference-server). From other benchmarks online ([1](https://github.com/kentaroy47/benchmark-FP32-FP16-INT8-with-TensorRT), [2](https://medium.com/@abhismatrix/speeding-deep-learning-inference-by-upto-20x-6c0c0f6fba81)) it’s visible that TensorRT can give even 2x/3x/nx boost to latency based on which precision is set without hurting quality much.
 
 TensorRT optimizes the model network by combining layers and optimizing kernel selection for improved latency, throughput, power efficiency and memory consumption. If the application specifies, it will additionally optimize the network to run in lower precision, further increasing performance and reducing memory requirements.
 
@@ -30,7 +30,7 @@ But in the current state of LLMs the workings for these kind of format conversio
 
 There were some other considerations also:
 
-- [Text Generation Inference](https://huggingface.github.io/text-generation-inference/) - Recently they came up with [a new license](https://twitter.com/jeffboudier/status/1685001126780026880?s=20), which wasn’t optimal for my purpose.
+- [Text Generation Inference](https://huggingface.github.io/text-generation-inference/) - Recently they came up with [a new license](https://twitter.com/jeffboudier/status/1685001126780026880?s=20), which wasn’t optimal for my purpose. Though I can use releases till 0.9 but let's keep that for some other day.
 - [vLLM](https://github.com/vllm-project/vllm) - Heard from peers that they saw a big decrease in output quality, which I’d have to explore.
 - [GGML](https://github.com/ggerganov/ggml) - GPU inference is not possible for ggml model formats currently, and for my purpose GPU usage was kinda required for very low latency. But again surely something I’d look into deeper some other day.
 
@@ -59,8 +59,8 @@ from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 def export_to_onnx(
     pretrained_model_name_or_path: str,
     output_folder: str,
-    max_seq_len: Optional[int],
     verify_export: bool,
+    max_seq_len: Optional[int] = None,
 ):
     reproducibility.seed_all(42)
     _, _, parsed_save_path = parse_uri(output_folder)
@@ -75,7 +75,7 @@ def export_to_onnx(
     model = AutoModelForCausalLM.from_pretrained(pretrained_model_name_or_path, config=config).to("cuda:0")
     model.eval()
 		# why?
-		# read - https://huggingface.co/docs/transformers/v4.31.0/en/model_doc/llama2#overview
+		# tips: https://huggingface.co/docs/transformers/v4.31.0/en/model_doc/llama2#
     tokenizer.add_special_tokens({"pad_token": "<pad>"})
     model.resize_token_embeddings(len(tokenizer))
     model.config.pad_token_id = tokenizer.pad_token_id
@@ -111,34 +111,34 @@ Once exported, we can also add an optional verify step as follows, which checks 
 
 ```python
 
-		# Optional verify onnx model step
-		if verify_export:
-        with torch.no_grad():
-            orig_out = model(**sample_input)
-            # put tuple to cpu for export
-            orig_out.logits = orig_out.logits.cpu()
+# Optional verify onnx model step
+if verify_export:
+with torch.no_grad():
+    orig_out = model(**sample_input)
+    # put tuple to cpu for export
+    orig_out.logits = orig_out.logits.cpu()
 
-        import onnx
-        import onnx.checker
-        import onnxruntime as ort
+import onnx
+import onnx.checker
+import onnxruntime as ort
 
-        _ = onnx.load(str(output_file))
-        onnx.checker.check_model(str(output_file))
-        ort_session = ort.InferenceSession(str(output_file))
+_ = onnx.load(str(output_file))
+onnx.checker.check_model(str(output_file))
+ort_session = ort.InferenceSession(str(output_file))
 
-        for key, value in sample_input.items():
-            sample_input[key] = value.cpu().numpy()
+for key, value in sample_input.items():
+    sample_input[key] = value.cpu().numpy()
 
-        loaded_model_out = ort_session.run(None, sample_input)
+loaded_model_out = ort_session.run(None, sample_input)
 
-        torch.testing.assert_close(
-            orig_out.logits.detach().numpy(),
-            loaded_model_out[0],
-            rtol=1e-2,
-            atol=1e-2,
-            msg=f'output mismatch between the orig and onnx exported model',
-        )
-        print('exported model ouptut matches with unexported model!!')
+torch.testing.assert_close(
+    orig_out.logits.detach().numpy(),
+    loaded_model_out[0],
+    rtol=1e-2,
+    atol=1e-2,
+    msg=f'output mismatch between the orig and onnx exported model',
+)
+print('exported model ouptut matches with unexported model!!')
 ```
 
 Now once the exported ONNX model is saved under let’s say - `./llama-2-7b-onnx/` we can run an inference as follows using `onnxruntime`:
@@ -461,7 +461,10 @@ If everything goes well, at the end you’d see something similar in the logs:
 Engine is saved to unet.trt
 ```
 
-Now let’s move to the inference part with deserializing `unet.trt` let’s define a class named `TRTModel` which will help us load the tensorRT engine file:
+
+Now let’s move to the inference part with deserializing `unet.trt`. We will use the `TRTModel` class from [x-stable-diffusion](https://github.com/stochasticai/x-stable-diffusion/blob/main/TensorRT/trt_model.py) snippet below for loading the TensorRT engine file.
+
+Now for the inference part, let’s define a custom diffusion model class and use it:
 
 ```python
 import torch
@@ -477,198 +480,6 @@ from transformers import CLIPTextModel, CLIPTokenizer
 from diffusers import AutoencoderKL, LMSDiscreteScheduler
 import time
 
-class TRTModel:
-    """
-    Generic class to run a TRT engine by specifying engine path and giving input data.
-    """
-
-    class HostDeviceMem(object):
-        """
-        Helper class to record host-device memory pointer pairs
-        """
-
-        def __init__(self, host_mem, device_mem):
-            self.host = host_mem
-            self.device = device_mem
-
-        def __str__(self):
-            return "Host:\n" + str(self.host) + "\nDevice:\n" + str(self.device)
-
-        def __repr__(self):
-            return self.__str__()
-
-    def __init__(self, engine_path):
-        self.engine_path = engine_path
-        self.logger = trt.Logger(trt.Logger.WARNING)
-        self.runtime = trt.Runtime(self.logger)
-
-        # load and deserialize TRT engine
-        self.engine = self.load_engine()
-
-        # allocate input/output memory buffers
-        self.inputs, self.outputs, self.bindings, self.stream = self.allocate_buffers(
-            self.engine
-        )
-        
-        # create context
-        self.context = self.engine.create_execution_context()
-
-        # Dict of NumPy dtype -> torch dtype (when the correspondence exists). From: https://github.com/pytorch/pytorch/blob/e180ca652f8a38c479a3eff1080efe69cbc11621/torch/testing/_internal/common_utils.py#L349
-        self.numpy_to_torch_dtype_dict = {
-            bool: torch.bool,
-            np.uint8: torch.uint8,
-            np.int8: torch.int8,
-            np.int16: torch.int16,
-            np.int32: torch.int32,
-            np.int64: torch.int64,
-            np.float16: torch.float16,
-            np.float32: torch.float32,
-            np.float64: torch.float64,
-            np.complex64: torch.complex64,
-            np.complex128: torch.complex128,
-        }
-
-    def load_engine(self):
-        with open(self.engine_path, "rb") as f:
-            engine = self.runtime.deserialize_cuda_engine(f.read())
-        return engine
-
-    def allocate_buffers(self, engine):
-        """
-        Allocates all buffers required for an engine, i.e. host/device inputs/outputs.
-        """
-        inputs = []
-        outputs = []
-        bindings = []
-        stream = cuda.Stream()
-
-        for binding in engine:  # binding is the name of input/output
-            size = trt.volume(engine.get_binding_shape(binding)) * engine.max_batch_size
-            dtype = trt.nptype(engine.get_binding_dtype(binding))
-
-            # Allocate host and device buffers
-            host_mem = cuda.pagelocked_empty(
-                size, dtype
-            )  # page-locked memory buffer (won't swapped to disk)
-            device_mem = cuda.mem_alloc(host_mem.nbytes)
-
-            # Append the device buffer address to device bindings. When cast to int, it's a linear index into the context's memory (like memory address). See https://documen.tician.de/pycuda/driver.html#pycuda.driver.DeviceAllocation
-            bindings.append(int(device_mem))
-
-            # Append to the appropriate input/output list.
-            if engine.binding_is_input(binding):
-                inputs.append(self.HostDeviceMem(host_mem, device_mem))
-            else:
-                outputs.append(self.HostDeviceMem(host_mem, device_mem))
-
-        return inputs, outputs, bindings, stream
-
-    def __call__(self, model_inputs: list, timing=False):
-        """
-        Inference step (like forward() in PyTorch).
-        model_inputs: list of numpy array or list of torch.Tensor (on GPU)
-        """
-        NUMPY = False
-        TORCH = False
-        if isinstance(model_inputs[0], np.ndarray):
-            NUMPY = True
-        elif torch.is_tensor(model_inputs[0]):
-            TORCH = True
-        else:
-            assert False, "Unsupported input data format!"
-
-        # check batch size
-        if NUMPY:
-            batch_size = np.unique(np.array([i.shape[0] for i in model_inputs]))
-        elif TORCH:
-            batch_size = np.unique(np.array([i.size(dim=0) for i in model_inputs]))
-        batch_size = batch_size[0]
-
-        for i, model_input in enumerate(model_inputs):
-            binding_name = self.engine[i]  # i-th input/output name
-            binding_dtype = trt.nptype(
-                self.engine.get_binding_dtype(binding_name)
-            )  # trt can only tell to numpy dtype
-
-            if NUMPY:
-                model_input = model_input.astype(binding_dtype)
-            elif TORCH:
-                model_input = model_input.to(
-                    self.numpy_to_torch_dtype_dict[binding_dtype]
-                )
-            if NUMPY:
-                # fill host memory with flattened input data
-                np.copyto(self.inputs[i].host, model_input.ravel())
-            elif TORCH:
-                if timing:
-                    try:
-                        cuda.memcpy_dtod(
-                            dest=self.inputs[i].device,
-                            src=model_input.data_ptr(),
-                            # size= model_input.nelement(),
-                            size=model_input.element_size() * model_input.nelement(),
-                        )
-                    except Exception:
-                        print("Index:", i)
-                        cuda.memcpy_dtod(
-                            dest=self.inputs[i].device,
-                            src=model_input.data_ptr(),
-                            size=model_input.element_size() * model_input.nelement() // 2,
-                        )
-                else:
-                    # for Torch GPU tensor it's easier, can just do Device to Device copy
-                    cuda.memcpy_dtod_async(
-                        self.inputs[i].device,
-                        model_input.data_ptr(),
-                        model_input.element_size() * model_input.nelement(),
-                        self.stream,
-                    )  # dtod need size in bytes
-
-        if NUMPY:
-            if timing:
-                [cuda.memcpy_htod(inp.device, inp.host) for inp in self.inputs]
-            else:
-                # input, Host to Device
-                [
-                    cuda.memcpy_htod_async(inp.device, inp.host, self.stream)
-                    for inp in self.inputs
-                ]
-
-        if timing:
-            self.context.execute_v2(bindings=self.bindings)
-        else:
-            # run inference
-            self.context.execute_async_v2(
-                bindings=self.bindings, stream_handle=self.stream.handle
-            )  # v2 no need for batch_size arg
-
-        if timing:
-            [cuda.memcpy_dtoh(out.host, out.device) for out in self.outputs]
-        else:
-            # output, Device to Host
-            [
-                cuda.memcpy_dtoh_async(out.host, out.device, self.stream)
-                for out in self.outputs
-            ]
-
-        if not timing:
-            # synchronize to ensure completion of async calls
-            self.stream.synchronize()
-
-        if NUMPY:
-            return [out.host.reshape(batch_size, -1) for out in self.outputs]
-        elif TORCH:
-            return [
-                torch.from_numpy(out.host.reshape(batch_size, -1))
-                for out in self.outputs
-            ]
-```
-
-above snippet is taken from [x-stable-diffusion](https://github.com/stochasticai/x-stable-diffusion/blob/main/TensorRT/trt_model.py)
-
-Now for the inference part, let’s define a custom diffusion model class and use it:
-
-```python
 class TrtDiffusionModel:
     def __init__(self):
         self.device = torch.device("cuda")
