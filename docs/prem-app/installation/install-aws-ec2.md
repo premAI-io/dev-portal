@@ -1,5 +1,5 @@
 ---
-id: install-aws-ec2.md
+id: install-aws-ec2
 title: Install PremAI on AWS EC2
 sidebar_label: Install on AWS EC2
 sidebar_position: 3
