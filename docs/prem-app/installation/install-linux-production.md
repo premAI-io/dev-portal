@@ -39,7 +39,7 @@ docker-compose up -d
 ```bash
 git clone https://github.com/premAI-io/prem-app.git
 cd ./prem-app
-docker-compose up -f docker-compose.yml -f docker-compose.gpu.yml -d
+docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
 ```
 
 And you will have the UI at `http://{localhost|server_ip}:8000`.
