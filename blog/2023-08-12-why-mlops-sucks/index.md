@@ -1,5 +1,5 @@
 ---
-slug: 'mlops-more-oops-than-ops'
+slug: mlops-more-oops-than-ops
 title: 'MLOps: More Oops than Ops'
 authors: [biswaroop]
 tags: [llm, prem, performance, mlops, onnx, tensorrt]
@@ -8,29 +8,26 @@ image: './banner.png'
 ---
 <!--truncate-->
 
-![Banner](./banner.png)
-<div align="center"><em>generated via <a href="http://registry.premai.io/detail.html?service=stable-diffusion-xl-with-refiner">stable-diffusion-xl</a></em></div>
+![Banner](./banner.png)<br/>
+:robot_face: *image generated using the [Stable Diffusion XL](http://registry.premai.io/detail.html?service=stable-diffusion-xl-with-refiner) model mentioned in this post*
+
 <head>
   <meta name="twitter:image" content="./banner.png"/>
 </head>
 
-MLOps has become an essential part of deploying and maintaining machine learning models. As model complexity increases exponentially, the need for effective MLOps practices has become super urgent. This post doesn’t fully solve something but rather acts like a walk-through for all frustrations I’ve experienced along 2-3 days of trial and errors while trying to improve Inference latency of few of the current most famous LLMs.
+As model complexity increases exponentially, so too does the need for effective MLOps practices. This post acts as a transparent write-up of all the MLOps frustrations I’ve experienced in the last few days. By sharing my challenges and insights, I hope to contribute to a community that openly discusses and shares solutions for MLOps challenges.
 
-By sharing my challenges and insights, I hope to contribute to a community that openly discusses and shares solutions for MLOps challenges. And showing that releasing Open-Sourced weights solves only 50% of the work.
+My goal was to improve Inference latency of few of the current state-of-the-art LLMs.
+
+Unfortunately, simply downloading trained model weights & existing code doesn't solve this problem.
 
 ## The Promise of Faster Inference
 
-My first target here was since [Llama 2 released](http://registry.premai.io/detail.html?service=llama-2-7b-chat), somehow I wanted to convert it into [ONNX](https://onnx.ai/) format, which would allow me to do ONNX → [TensorRT](https://developer.nvidia.com/tensorrt-getting-started) conversion and finally serve it using [Triton Inference Server](https://developer.nvidia.com/triton-inference-server). From other benchmarks online [[1](https://github.com/kentaroy47/benchmark-FP32-FP16-INT8-with-TensorRT), [2](https://medium.com/@abhismatrix/speeding-deep-learning-inference-by-upto-20x-6c0c0f6fba81)] it’s visible that TensorRT can give even 2x/3x/nx boost to latency based on which precision is set without hurting quality much.
+My first target here was [Llama 2](http://registry.premai.io/detail.html?service=llama-2-7b-chat). I wanted to convert it into [ONNX](https://onnx.ai) format, which could then be converted to [TensorRT](https://developer.nvidia.com/tensorrt-getting-started), and finally served using [Triton Inference Server](https://developer.nvidia.com/triton-inference-server).
 
 TensorRT optimizes the model network by combining layers and optimizing kernel selection for improved latency, throughput, power efficiency and memory consumption. If the application specifies, it will additionally optimize the network to run in lower precision, further increasing performance and reducing memory requirements.
 
-But in the current state of LLMs the workings for these kind of format conversions feel super flaky, things break too often without there being any solution online and yes it’s somewhat expected since these models are so new and all with different architectures using different operators in them.
-
-There were some other considerations also:
-
-- [Text Generation Inference](https://huggingface.github.io/text-generation-inference/) - Recently they came up with [a new license](https://twitter.com/jeffboudier/status/1685001126780026880?s=20), which wasn’t optimal for my purpose. Though I can use releases till 0.9 but let's keep that for some other day.
-- [vLLM](https://github.com/vllm-project/vllm) - Heard from peers that they saw a big decrease in output quality, which I’d have to explore.
-- [GGML](https://github.com/ggerganov/ggml) - GPU inference is not possible for `ggml` model formats currently, and for my purpose GPU usage was kinda required for very low latency. But again surely something I’d look into deeper some other day.
+From online benchmarks [[1](https://github.com/kentaroy47/benchmark-FP32-FP16-INT8-with-TensorRT), [2](https://medium.com/@abhismatrix/speeding-deep-learning-inference-by-upto-20x-6c0c0f6fba81)] it seems possible to achieve a 2~3x boost to latency (by reducing precision without hurting quality much). But the workings for these kind of format conversions feel super flaky, things break too often (without any solution to be found online). Yes, it’s somewhat expected since these models are so new, with different architectures using different (not yet widely-supported) layers and operators.
 
 ## Model Conversion Errors
 
@@ -43,30 +40,25 @@ Now I considered two options for converting huggingface models to ONNX format:
 
 ### `torch.onnx.export` gibberish text
 
-Let’s write a function which will load tokenizer, model and export it into ONNX format with required parameters:
+Let’s write an `export_to_onnx` function which will load the tokenizer & model, and export it into ONNX format:
 
 ```python
-import os
-from pathlib import Path
-from typing import Optional
-
 import torch
 from composer.utils import parse_uri, reproducibility
+from pathlib import Path
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 
 def export_to_onnx(
     pretrained_model_name_or_path: str,
     output_folder: str,
     verify_export: bool,
-    max_seq_len: Optional[int] = None,
+    max_seq_len: int | None = None,
 ):
     reproducibility.seed_all(42)
     _, _, parsed_save_path = parse_uri(output_folder)
-
-    # Loading HF config/model/tokenizer
+    # Load HF config/model/tokenizer
     tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path, use_fast=True)
     config = AutoConfig.from_pretrained(pretrained_model_name_or_path)
-
     if hasattr(config, 'attn_config'):
         config.attn_config['attn_impl'] = 'torch'
 
@@ -89,11 +81,10 @@ def export_to_onnx(
         model(**sample_input)
 
     output_file = Path(parsed_save_path) / 'model.onnx'
-    os.makedirs(parsed_save_path, exist_ok=True)
-    # putting sample input on cpu for export
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    # Put sample input on cpu for export
     sample_input = {k: v.cpu() for k, v in sample_input.items()}
     model = model.to("cpu")
-    # Exporting the model with ONNX
     torch.onnx.export(
         model,
         (sample_input,),
@@ -104,30 +95,24 @@ def export_to_onnx(
     )
 ```
 
-Once exported, we can also add an optional verify step as follows, which checks if the exported model’s output is close to original model’s output:
+We can also check if the exported & original models' outputs are similar:
 
 ```python
-
-# Optional verify onnx model step
-if verify_export:
-with torch.no_grad():
-    orig_out = model(**sample_input)
-    # put tuple to cpu for export
-    orig_out.logits = orig_out.logits.cpu()
-
+# (Optional) verify onnx model outputs
 import onnx
 import onnx.checker
 import onnxruntime as ort
 
+with torch.no_grad():
+    orig_out = model(**sample_input)
+    orig_out.logits = orig_out.logits.cpu()  # put on cpu for export
+
 _ = onnx.load(str(output_file))
 onnx.checker.check_model(str(output_file))
 ort_session = ort.InferenceSession(str(output_file))
-
 for key, value in sample_input.items():
     sample_input[key] = value.cpu().numpy()
-
 loaded_model_out = ort_session.run(None, sample_input)
-
 torch.testing.assert_close(
     orig_out.logits.detach().numpy(),
     loaded_model_out[0],
@@ -135,10 +120,10 @@ torch.testing.assert_close(
     atol=1e-2,
     msg=f'output mismatch between the orig and onnx exported model',
 )
-print('exported model ouptut matches with unexported model!!')
+print('Success: exported & original model outputs match')
 ```
 
-Now once the exported ONNX model is saved under let’s say - `./llama-2-7b-onnx/` we can run an inference as follows using `onnxruntime`:
+Assuming we've saved the ONNX model in `./llama-2-7b-onnx/`, we can now run inference using `onnxruntime`:
 
 ```python
 import onnx
@@ -147,14 +132,10 @@ import onnxruntime as ort
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-# set onnx file path
-output_file = 'llama-2-7b-onnx/model.onnx'
-
+output_file = 'llama-2-7b-onnx/model.onnx'  # converted model from above
 ort_session = ort.InferenceSession(str(output_file))
-
 tokenizer = AutoTokenizer.from_pretrained("llama-2-7b-chat-hf", use_fast=True)
 tokenizer.add_special_tokens({"pad_token": "<pad>"})
-
 inputs = tokenizer(
     "Hello, my dog is cute",
     padding="max_length",
@@ -163,24 +144,21 @@ inputs = tokenizer(
     return_tensors="np",
     add_special_tokens=True
 )
-
 loaded_model_out = ort_session.run(None, inputs.data)
 tokenizer.batch_decode(torch.argmax(torch.tensor(loaded_model_out[0]), dim=-1))
 ```
 
-this generates really random outputs e.g:
+:confounded: On my machine, this generates really funky outputs:
 
-```python
-['ЉЉЉЉЉЉ\n\n\n\n\n\n\n\n\n\n Hello Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis..........SMSMSMSMSMSMSMSMSMSMSMS Unterscheidung, I name is ough,']
-```
+`ЉЉЉЉЉЉ\n\n\n\n\n\n\n\n\n\n Hello Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis..........SMSMSMSMSMSMSMSMSMSMSMS Unterscheidung, I name is ough,`
 
-Which is mostly due to not having a proper decoding strategy ([greedy search](https://docs.cohere.com/docs/controlling-generation-with-top-k-top-p#1-pick-the-top-token-greedy-decoding), [beam search](https://machinelearningmastery.com/beam-search-decoder-natural-language-processing/), etc) while generating tokens. This will be somewhat resolved when we use `optimum` for export and inference as it by default comes with decoding strategies.
+... which is mostly due to missing a proper decoding strategy ([greedy](https://docs.cohere.com/docs/controlling-generation-with-top-k-top-p#1-pick-the-top-token-greedy-decoding), [beam](https://machinelearningmastery.com/beam-search-decoder-natural-language-processing), etc.) while generating tokens.
 
 ### `optimum-cli` gibberish text and `tensorrt` slowness
 
-From the [Optimum docs](https://huggingface.co/docs/transformers/serialization#export-to-onnx), we can do:
+To solve the problem above, we can try a different exporter which includes decoding strategies.
 
-We can do:
+Using the [Optimum ONNX exporter](https://huggingface.co/docs/transformers/serialization#export-to-onnx) instead (assuming the original model is in `./llama-2-7b-chat-hf/`), we can do:
 
 ```sh
 optimum-cli export onnx \
@@ -189,9 +167,9 @@ optimum-cli export onnx \
   llama-2-7b-optimum/
 ```
 
-to save onnx format for llama-2-7b-chat to `./llama-2-7b-optimum` directory locally - this takes few minutes to generate and if you don’t want to use GPU for this conversion then remove `--device cuda` from the above command.
+:hourglass: This takes a few minutes to generate. If you don’t has a GPU for this conversion, then remove `--device cuda` from the above command.
 
-it’ll generate:
+The result is:
 
 ```
 llama-2-7b-optimum
@@ -611,6 +589,12 @@ With some time searching about this, found a relevant issue with Stable Diffusio
 
 - Do conversions of this model in > fp16 - which I did but it made no difference and I was still getting noise or black images only.
 - Using `xformers` but currently for `onnx` conversion we need `pytorch` nightly which [recently added a `scaled_dot_product_attention` operator](https://github.com/pytorch/pytorch/issues/97262).
+
+## Other Frustrations
+
+- Licences: [Text Generation Inference](https://huggingface.github.io/text-generation-inference) recently they came up with [a new license](https://twitter.com/jeffboudier/status/1685001126780026880?s=20) which is more restrictive for newer versions. I can only use old releases (up to v0.9).
+- Lack of GPU support: [GGML](https://github.com/ggerganov/ggml) doesn't currently support GPU inference, so I can't use it if I want very low latency.
+- Quality: I've heard from peers that saw a big decrease in output quality [vLLM](https://github.com/vllm-project/vllm). I'd like to explore this in future.
 
 ## Conclusion
 
