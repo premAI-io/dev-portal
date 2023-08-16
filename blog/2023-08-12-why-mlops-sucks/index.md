@@ -1,6 +1,6 @@
 ---
-slug: 'why-mlops-sucks'
-title: Why MLOps sucks?
+slug: 'mlops-more-oops-than-ops'
+title: 'MLOps: More Oops than Ops'
 authors: [biswaroop]
 tags: [llm, prem, performance, mlops, onnx, tensorrt]
 description: 'Navigating the Challenges of Improving Inference Latency for New Large Models through ONNX and TensorRT Optimization.'
@@ -177,7 +177,7 @@ this generates really random outputs e.g:
 ['ЉЉЉЉЉЉ\n\n\n\n\n\n\n\n\n\n Hello Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis Hinweis..........SMSMSMSMSMSMSMSMSMSMSMS Unterscheidung, I name is ough,']
 ```
 
-Which is mostly due to not having a proper decoding strategy (greedy, beam, etc) while generating tokens. This will be somewhat resolved when we use `optimum` for export and inference as it by default comes with decoding strategies.
+Which is mostly due to not having a proper decoding strategy ([greedy search](https://docs.cohere.com/docs/controlling-generation-with-top-k-top-p#1-pick-the-top-token-greedy-decoding), [beam search](https://machinelearningmastery.com/beam-search-decoder-natural-language-processing/), etc) while generating tokens. This will be somewhat resolved when we use `optimum` for export and inference as it by default comes with decoding strategies.
 
 ### Using `optimum-cli` tool by Huggingface.
 
