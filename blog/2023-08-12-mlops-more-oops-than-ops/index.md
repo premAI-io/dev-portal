@@ -9,7 +9,7 @@ image: './banner.png'
 <!--truncate-->
 
 ![Banner](./banner.png)<br/>
-:robot_face: *image generated using the [Stable Diffusion XL](http://registry.premai.io/detail.html?service=stable-diffusion-xl-with-refiner) model mentioned in this post*
+:robot_face: *image generated using the [Stable Diffusion 2.1](https://registry.premai.io/detail.html?service=stable-diffusion-2-1) model mentioned in this post*
 
 <head>
   <meta name="twitter:image" content="./banner.png"/>
@@ -74,8 +74,7 @@ def export_to_onnx(
         max_length=max_seq_len or model.config.max_seq_len,
         truncation=True,
         return_tensors="pt",
-        add_special_tokens=True,
-    ).to("cuda:0")
+        add_special_tokens=True).to("cuda:0")
 
     with torch.no_grad():
         model(**sample_input)
@@ -91,8 +90,7 @@ def export_to_onnx(
         str(output_file),
         input_names=['input_ids', 'attention_mask'],
         output_names=['output'],
-        opset_version=16,
-    )
+        opset_version=16)
 ```
 
 We can also check if the exported & original models' outputs are similar:
@@ -118,8 +116,7 @@ torch.testing.assert_close(
     loaded_model_out[0],
     rtol=1e-2,
     atol=1e-2,
-    msg=f'output mismatch between the orig and onnx exported model',
-)
+    msg=f'output mismatch between the orig and onnx exported model')
 print('Success: exported & original model outputs match')
 ```
 
@@ -142,8 +139,7 @@ inputs = tokenizer(
     max_length=1024,
     truncation=True,
     return_tensors="np",
-    add_special_tokens=True
-)
+    add_special_tokens=True)
 loaded_model_out = ort_session.run(None, inputs.data)
 tokenizer.batch_decode(torch.argmax(torch.tensor(loaded_model_out[0]), dim=-1))
 ```
@@ -406,7 +402,7 @@ parse_success = onnx_parser.parse_from_file(onnx_model)
 for idx in range(onnx_parser.num_errors):
     print(onnx_parser.get_error(idx))
 if not parse_success:
-    raise ValueError('ONNX model parsing failed')
+    raise ValueError("ONNX model parsing failed")
 
 # set input, latent and other shapes required by the layers
 profile.set_shape("sample", latents_shape, latents_shape, latents_shape)
@@ -415,60 +411,41 @@ profile.set_shape("timestep", timestep_shape, timestep_shape, timestep_shape)
 config.add_optimization_profile(profile)
 
 config.set_flag(trt.BuilderFlag.FP16)
-print(f'Serializing & saving engine to "{engine_filename}"')
+print(f"Serializing & saving engine to '{engine_filename}'")
 serialized_engine = TRT_BUILDER.build_serialized_network(network, config)
 with open(engine_filename, 'wb') as f:
     f.write(serialized_engine)
 ```
 
-If everything goes well, at the end you’d see something similar in the logs:
-
-```json
-...
-[08/11/2023-07:51:11] [TRT] [I] [MemUsageChange] TensorRT-managed allocation
-in building engine: CPU +571, GPU +1652, now: CPU 571, GPU 1652 (MiB)
-Engine is saved to unet.trt
-```
-
-Now let’s move to the inference part with deserializing `unet.trt`. We will use the `TRTModel` class from [x-stable-diffusion](https://github.com/stochasticai/x-stable-diffusion/blob/main/TensorRT/trt_model.py) snippet below for loading the TensorRT engine file.
-
-Now for the inference part, let’s define a custom diffusion model class and use it:
+Now let’s move to deserializing `unet.trt` for inference. We'll use the `TRTModel` class from [x-stable-diffusion's `trt_model`](https://github.com/stochasticai/x-stable-diffusion/blob/main/TensorRT/trt_model.py):
 
 ```python
 import torch
-from torch import autocast
 import tensorrt as trt
 trt.init_libnvinfer_plugins(None, "")
-import numpy as np
-import pycuda.driver as cuda
 import pycuda.autoinit
-from tqdm import tqdm
-from PIL import Image
-from transformers import CLIPTextModel, CLIPTokenizer
 from diffusers import AutoencoderKL, LMSDiscreteScheduler
-import time
+from PIL import Image
+from torch import autocast
+from transformers import CLIPTextModel, CLIPTokenizer
 from trt_model import TRTModel
-
+from tqdm.contrib import tenumerate
 
 class TrtDiffusionModel:
     def __init__(self):
         self.device = torch.device("cuda")
         self.unet = TRTModel("./unet.trt") # tensorrt engine saved path
         self.vae = AutoencoderKL.from_pretrained(
-            "stabilityai/stable-diffusion-2-1", subfolder="vae"
-        ).to(self.device)
+            "stabilityai/stable-diffusion-2-1", subfolder="vae").to(self.device)
         self.tokenizer = CLIPTokenizer.from_pretrained(
-            "stabilityai/stable-diffusion-2-1", subfolder="tokenizer"
-        )
+            "stabilityai/stable-diffusion-2-1", subfolder="tokenizer")
         self.text_encoder = CLIPTextModel.from_pretrained(
-            "stabilityai/stable-diffusion-2-1", subfolder="text_encoder"
-        ).to(self.device)
+            "stabilityai/stable-diffusion-2-1", subfolder="text_encoder").to(self.device)
         self.scheduler = LMSDiscreteScheduler(
             beta_start=0.00085,
             beta_end=0.012,
             beta_schedule="scaled_linear",
-            num_train_timesteps=1000,
-        )
+            num_train_timesteps=1000)
 
     def predict(
         self, prompts, num_inference_steps=50, height=512, width=512, max_seq_length=64
@@ -480,45 +457,38 @@ class TrtDiffusionModel:
             padding="max_length",
             max_length=max_seq_length,
             truncation=True,
-            return_tensors="pt",
-        )
+            return_tensors="pt")
         text_embeddings = self.text_encoder(text_input.input_ids.to(self.device))[0]
         uncond_input = self.tokenizer(
             [""] * batch_size,
             padding="max_length",
             max_length=max_seq_length,
-            return_tensors="pt",
-        )
+            return_tensors="pt")
         uncond_embeddings = self.text_encoder(uncond_input.input_ids.to(self.device))[0]
         text_embeddings = torch.cat([uncond_embeddings, text_embeddings])
 
         latents = torch.randn((batch_size, 4, height // 8, width // 8)).to(self.device)
         self.scheduler.set_timesteps(num_inference_steps)
-
         latents = latents * self.scheduler.sigmas[0]
+
         with torch.inference_mode(), autocast("cuda"):
-            for i, t in tqdm(enumerate(self.scheduler.timesteps)):
+            for i, t in tenumerate(self.scheduler.timesteps):
                 latent_model_input = torch.cat([latents] * 2)
                 sigma = self.scheduler.sigmas[i]
                 latent_model_input = latent_model_input / ((sigma**2 + 1) ** 0.5)
-
                 # predict the noise residual
                 inputs = [
                     latent_model_input,
                     torch.tensor([t]).to(self.device),
-                    text_embeddings,
-                ]
+                    text_embeddings]
                 noise_pred = self.unet(inputs, timing=True)
                 noise_pred = torch.reshape(noise_pred[0], (batch_size*2, 4, 64, 64))
-
                 noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
                 noise_pred = noise_pred_uncond + guidance_scale * (
-                    noise_pred_text - noise_pred_uncond
-                )
+                    noise_pred_text - noise_pred_uncond)
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(noise_pred.cuda(), t, latents)["prev_sample"]
-
-            # scale and decode the image latents with vae
+            # scale and decode the image latents with VAE
             latents = 1 / 0.18215 * latents
             image = self.vae.decode(latents).sample
         return image
@@ -529,8 +499,7 @@ image = model.predict(
     num_inference_steps=25,
     height=512,
     width=512,
-    max_seq_length=64,
-)
+    max_seq_length=64)
 image = (image / 2 + 0.5).clamp(0, 1)
 image = image.detach().cpu().permute(0, 2, 3, 1).numpy()
 images = (image * 255).round().astype("uint8")
@@ -538,24 +507,21 @@ pil_images = [Image.fromarray(image) for image in images]
 pil_images[0].save("image_generated.png")
 ```
 
-It seems that when the above script is ran, it works but the generations look something like these:
+The above script runs, but the generated output looks like this:
 
-<!-- ![black image](black_image.png)
+![blank](black_image.png) |  ![noise](noise_image.png)
+:------------------------:|:-------------------------:
 
-![noise image](noise_image.png) -->
+Something’s going wrong, and changing to different tensor shapes (defined above) also doesn’t help fix the generation of blank/noisy images.
 
-black image         |  noise image
-:-------------------------:|:-------------------------:
-![black image](black_image.png) |  ![noise image](noise_image.png)
+I don't know how to make Stable Diffusion 2.1 work with TensorRT, though it's proved possible for other Stable Diffusion variants in [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui). Others reporting similar issues in [stable-diffusion-webui#5503](https://github.com/AUTOMATIC1111/stable-diffusion-webui/issues/5503#issuecomment-1341495770) have suggested:
 
-which shows that something’s going wrong here, and changing to different tensor shapes (defined above) also doesn’t help fix noisy or no generations. It’s a big blocker for me to proceed with stable-diffusion 2.1 converted into TensorRT engine format for inference. Though it was possible for few other variants of Stable Diffusion coming from [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
-
-With some time searching about this, found a relevant issue with Stable Diffusion giving out black images [#5503](https://github.com/AUTOMATIC1111/stable-diffusion-webui/issues/5503#issuecomment-1341495770). It mentions two ways i.e:
-
-- Do conversions of this model in > fp16 - which I did but it made no difference and I was still getting noise or black images only.
-- Using `xformers` but currently for `onnx` conversion we need `pytorch` nightly which [recently added a `scaled_dot_product_attention` operator](https://github.com/pytorch/pytorch/issues/97262).
+- Use more than 16-bits: I did, but it didn't help.
+- Use `xformers`: For our model we need [`pytorch`'s recently added `scaled_dot_product_attention` operator](https://github.com/pytorch/pytorch/issues/97262).
 
 ## Other Frustrations
+
+Maybe the code above is paritally in my control, but there are also other issues that have nothing to do with my code:
 
 - Licences: [Text Generation Inference](https://huggingface.github.io/text-generation-inference) recently they came up with [a new license](https://twitter.com/jeffboudier/status/1685001126780026880?s=20) which is more restrictive for newer versions. I can only use old releases (up to v0.9).
 - Lack of GPU support: [GGML](https://github.com/ggerganov/ggml) doesn't currently support GPU inference, so I can't use it if I want very low latency.
@@ -563,6 +529,6 @@ With some time searching about this, found a relevant issue with Stable Diffusio
 
 ## Conclusion
 
-Okay that’s it for this post, all I walked you through are errors and issues, due to me not able to give it enough time so that I can dig deeper and solve it without any help from outside, or issues due to scarcity of documentation/resources for the same things in ML community. I truly feel the lack of documentation and resources for these specific challenges in the ML community is evident. As the field of ML continues to rapidly evolve, there is a need for more in-depth discussions and solutions to the technical hurdles that arise. While there is a focus on showcasing the latest advancements and shiny results, it's important to also acknowledge and address the underlying complexities that come with deploying and maintaining machine learning models.
+I've listed my recent errors and frustrations. I need more time to dig deeper and solve them, but if you think you can help please do reply in any of the issues linked above! By sharing my experiences and challenges, I hope this can spark lots of discussions and new ideas. Maybe you've faced something similar?
 
-By sharing my experiences and challenges, I hope this can spark lots of discussions and creation of new issues if people might’ve faced something similar. As the journey to improving inference latency is not without its roadblocks, but through collective efforts, we can navigate through the frustrations and eventually achieve the desired results.
+While the world likes showcasing the latest advancements and shiny results, it's important to also acknowledge and address the underlying complexities that come with deploying & maintaining ML models. There's a scarcity of documentation/resources for these problems in the ML community. As the field continues to rapidly evolve, there is a need for more in-depth discussions and solutions to these technical hurdles.
