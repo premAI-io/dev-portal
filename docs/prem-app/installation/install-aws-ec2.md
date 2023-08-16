@@ -10,8 +10,8 @@ Launch an EC2 instance using the below bookmark link, opening port 8000 and sele
 
 ### Prerequisites:
 
-1. A valid AWS account.
-2. An IAM user with permissions to launch EC2 instances.
+1. An [active AWS account](https://docs.aws.amazon.com/SetUp/latest/UserGuide/setup-AWSsignup.html).
+2. An [IAM user](https://docs.aws.amazon.com/SetUp/latest/UserGuide/setup-configadminuser.html) with [permissions to launch EC2 instances](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_ec2_region.html).
 
 ### Step by Step Guide:
 
