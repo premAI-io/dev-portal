@@ -240,7 +240,7 @@ Using the new model with `max_length=128`, :
 
 ### `optimum-cli` segfaults
 
-Next let’s try with the **Dolly-v2 7B** from Databricks. The equivalent `optimum-cli` command for ONNX conversion would be:
+Next let’s try with the [**Dolly-v2 7B**](https://huggingface.co/databricks/dolly-v2-7b) from [Databricks](https://www.databricks.com/blog/2023/04/12/dolly-first-open-commercially-viable-instruction-tuned-llm). The equivalent `optimum-cli` command for ONNX conversion would be:
 
 ```sh
 optimum-cli export onnx \
@@ -293,7 +293,7 @@ The [different optimization levels](https://huggingface.co/docs/optimum/main/en/
 
 We still get the same segfault error for all of the levels.
 
-For `-O1`, the model gets saved but there’s no noticeable performance change. For `-O2` it gets killed (even though I have 40GB A100 GPU + 80GB CPU RAM). Meanwhile for `-O3` & `-O4` it gives seg-fault (above).
+For `-O1`, the model gets saved but there’s no noticeable performance change. For `-O2` it gets killed (even though I have 40GB A100 GPU + 80GB CPU RAM). Meanwhile for `-O3` & `-O4` it gives seg-fault (above) while only partially saving the model files.
 
 ### `torch.onnx.export` gibberish images
 
