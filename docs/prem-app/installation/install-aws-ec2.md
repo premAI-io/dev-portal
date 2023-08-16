@@ -15,9 +15,7 @@ Launch an EC2 instance using the below bookmark link, opening port 8000 and sele
 
 ### Step by Step Guide:
 
-```
 https://console.aws.amazon.com/ec2/v2/home?region=eu-west-1#LaunchInstanceWizard:ami=ami-0c08919f39b2887c0
-```
 
 1. **Access the Bookmark Link**:
     - Open your browser.
