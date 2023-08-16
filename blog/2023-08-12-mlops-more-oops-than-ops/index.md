@@ -1,7 +1,7 @@
 ---
 slug: mlops-more-oops-than-ops
 title: 'MLOps: More Oops than Ops'
-authors: [biswaroop]
+authors: [biswaroop, casperdcl]
 tags: [llm, prem, performance, mlops, onnx, tensorrt]
 description: 'Navigating the Challenges of Improving Inference Latency for New Large Models through ONNX and TensorRT Optimization.'
 image: './banner.png'
@@ -185,7 +185,7 @@ llama-2-7b-optimum
  └── tokenizer.model
 ```
 
-Now when I try to do inference using `optimum.onnxruntime.ORTModelForCausalLM` things work fine when provider is `CPUExecutionProvider`:
+Now when I try to do inference using `optimum.onnxruntime.ORTModelForCausalLM`, things work fine (though slowly) using the `CPUExecutionProvider`:
 
 ```python
 from transformers import AutoTokenizer
@@ -197,45 +197,50 @@ inputs = tokenizer("My name is Arthur and I live in", return_tensors="pt")
 gen_tokens = model.generate(**inputs, max_length=16)
 assert model.providers == ['CPUExecutionProvider']
 print(tokenizer.batch_decode(gen_tokens))
-# this takes longer time than expected since running on CPU, but generates properly.
-
-# >>> ['<s> My name is Arthur and I live in a small town in the countr']
 ```
 
-But when the provider is `CUDAExecutionProvider` I get random gibberish text generation on inference:
+After waiting a long time, we get a result:
+
+`<s> My name is Arthur and I live in a small town in the countr`
+
+But when switching to the faster `CUDAExecutionProvider`, I get gibberish text on inference:
 
 ```python
 model = ORTModelForCausalLM.from_pretrained("./onnx_optimum/", use_cache=False, use_io_binding=False, provider="CUDAExecutionProvider")
-# >>> 2023-08-02 19:47:43.534099146 [W:onnxruntime:, session_state.cc:1169 VerifyEachNodeIsAssignedToAnEp] Some nodes were not assigned to the preferred execution providers which may or may not have an negative impact on performance. e.g. ORT explicitly assigns shape related ops to CPU to improve perf.
-2023-08-02 19:47:43.534136078 [W:onnxruntime:, session_state.cc:1171 VerifyEachNodeIsAssignedToAnEp] Rerunning with verbose output on a non-minimal build will show node assignments.
-
 inputs = tokenizer("My name is Arthur and I live in", return_tensors="pt").to("cuda")
 gen_tokens = model.generate(**inputs, max_length=16)
 assert model.providers == ['CUDAExecutionProvider', 'CPUExecutionProvider']
-
 print(tokenizer.batch_decode(gen_tokens))
-# >>> ['<s> My name is Arthur and I live in a<unk><unk><unk><unk><unk><unk>']
 ```
 
-even with different temperature and other parameter values it's always giving out random unrelated outputs like the one above when using `CUDAExecutionProvider`
+```json
+2023-08-02 19:47:43.534099146 [W:onnxruntime:, session_state.cc:1169 VerifyEachNodeIsAssignedToAnEp]
+Some nodes were not assigned to the preferred execution providers which may or may not
+have an negative impact on performance. e.g. ORT explicitly assigns shape related ops
+to CPU to improve perf.
+2023-08-02 19:47:43.534136078 [W:onnxruntime:, session_state.cc:1171 VerifyEachNodeIsAssignedToAnEp]
+Rerunning with verbose output on a non-minimal build will show node assignments.
 
-This issue was raised [under optimum repository here](https://github.com/huggingface/optimum/issues/1248).
+<s> My name is Arthur and I live in a<unk><unk><unk><unk><unk><unk>
+```
 
-It looks like the local llama 2 7b model which I converted to huggingface format might've had some bug as it's not happening for other (newly updated) llama hf model from hf,
+Even with different `temperature` and other parameter values, it always yields unintelligible outputs, as reported in [optimum#1248](https://github.com/huggingface/optimum/issues/1248).
 
-After quickly running some benchmark benchmark and comparing ONNX format with its raw huggingface variant `daryl149/llama-2-7b-chat-hf` we could see the following results on 128 max lengths set on generation config:
+:tada: **Update**: after about a week this issue seemed to magically disappear — possibly due to a new version of `llama-2-7b-chat-hf` being released.
+
+Using the new model with `max_length=128`, :
 
 - Prompt: *Why should one run Machine learning model on-premises?*
-    - ONNX inference latency: `2.31s`
-    - Huggingface version latency: `3s`
+  - ONNX inference latency: `2.31s`
+  - HuggingFace version latency: `3s`
 
-We can see that the ONNX Llama 2 7b model is ~25% faster compared to huggingface variant 🚀
+:rocket: The ONNX model is ~23% faster than the HuggingFace variant!
 
-okay cool but now there's a new issue with tensorrt that’s raised [here](https://github.com/huggingface/optimum/issues/1278)
+:warning: However, while both CPU and CUDA providers work, there now seems to be a bug when trying `TensorrtExecutionProvider` — reported in [optimum#1278](https://github.com/huggingface/optimum/issues/1278).
 
 ### `optimum-cli` segfaults
 
-Next let’s try with Dolly-v2 7B parameter model released by Databricks. The equivalent `optimum-cli` command for ONNX conversion would be:
+Next let’s try with the **Dolly-v2 7B** from Databricks. The equivalent `optimum-cli` command for ONNX conversion would be:
 
 ```sh
 optimum-cli export onnx \
@@ -244,13 +249,12 @@ optimum-cli export onnx \
   dolly_optimum
 ```
 
-It uses around 17GB of my gpu vram, working fine till the whole conversion but ending with seg-fault 😢
+:cry: It uses around 17GB of my GPU RAM, seemingly working fine but finally ending with a segmentation fault:
 
 ```json
 ======= Diagnostic Run torch.onnx.export version 2.1.0.dev20230804+cu118 =======
 verbose: False, log level: 40
 ======================= 0 NONE 0 NOTE 0 WARNING 0 ERROR ========================
-
 Saving external data to one file...
 2023-08-09 20:59:33.334484259 [W:onnxruntime:, session_state.cc:1169 VerifyEachNodeIsAssignedToAnEp]
 Some nodes were not assigned to the preferred execution providers which may or may not
@@ -264,82 +268,62 @@ Post-processing the exported models...
 Segmentation fault (core dumped)
 ```
 
-But I am still able to see all model files are converted and saved under `dolly_optimum` directory as provided in above command.
+Confusingly, despite this error, all model files seem to be converted and saved to disk. Other people have reported similar segfault issues while exporting ([transformers#21360](https://github.com/huggingface/transformers/issues/21360), [optimum#798](https://github.com/huggingface/optimum/issues/798)).
 
-From few quick searches I could see people faced similar seg fault issues while export and it still seems like an ongoing issue ([#21360](https://github.com/huggingface/transformers/issues/21360), [#798](https://github.com/huggingface/optimum/issues/798)).
-
-After quickly running some benchmark benchmark and comparing ONNX format with its raw pytorch variant `databricks/dolly-v2-7b` we could see the following results:
+Results using the Dolly v2 model:
 
 - Prompt: *Why should one run Machine learning model on-premises?*
-    - ONNX inference latency: `8.2s`
-    - Huggingface version latency: `5.2s`
+  - ONNX inference latency: `8.2s`
+  - HuggingFace version latency: `5.2s`
 
-We see that ONNX version is actually ~35% slower compared to normal version :angry:
+:angry: The ONNX model is actually ~58% slower than the HuggingFace variant!
 
-To try making things faster we can try out optimizing our converted onnx dolly model
+To make things faster, we can try to optimize the model:
 
 ```sh
 optimum-cli onnxruntime optimize -O4 --onnx_model ./dolly_optimum/ -o dolly_optimized/
 ```
 
-These being [different optimizations available](https://huggingface.co/docs/optimum/main/en/onnxruntime/usage_guides/optimization):
+The [different optimization levels](https://huggingface.co/docs/optimum/main/en/onnxruntime/usage_guides/optimization) are:
 
 - `-O1`: basic general optimizations.
 - `-O2`: basic and extended general optimizations, transformers-specific fusions.
 - `-O3`: same as O2 with GELU approximation.
 - `-O4`: same as O3 with mixed precision (fp16, GPU-only).
 
-but we see again something similar:
+We still get the same segfault error for all of the levels.
 
-```json
-Optimizing model...
-2023-08-09 21:57:33.285164830 [W:onnxruntime:, session_state.cc:1169 VerifyEachNodeIsAssignedToAnEp]
-Some nodes were not assigned to the preferred execution providers which may or may not
-have an negative impact on performance. e.g. ORT explicitly assigns shape related ops
-to CPU to improve perf.
-2023-08-09 21:57:33.285198682 [W:onnxruntime:, session_state.cc:1171 VerifyEachNodeIsAssignedToAnEp]
-Rerunning with verbose output on a non-minimal build will show node assignments.
-Segmentation fault
-```
-
-yes, seg-fault!
-
-For `-O1` it works and optimized model gets saved but there’s literally no performance change visible on that. For `-O2` it gets killed even when I have 40GB A100 GPU + 80GB CPU RAM.
-
-While for `-O3` & `-O4` it gives seg-fault (above).
+For `-O1`, the model gets saved but there’s no noticeable performance change. For `-O2` it gets killed (even though I have 40GB A100 GPU + 80GB CPU RAM). Meanwhile for `-O3` & `-O4` it gives seg-fault (above).
 
 ### `torch.onnx.export` gibberish images
 
-Let’s benchmark first how much time [**stable-diffusion-2-1**](https://huggingface.co/stabilityai/stable-diffusion-2-1) takes, for that spin an `ipython` shell and we can do:
+Moving on from text-based models, let’s now look at an image generator. We can try to speed up the [**Stable Diffusion 2.1**](https://huggingface.co/stabilityai/stable-diffusion-2-1) model. In an IPython shell:
 
 ```python
 from diffusers import StableDiffusionPipeline
-
 pipe = StableDiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-2-1", torch_dtype=torch.float16).to("cuda:0")
 %time img = pipe("Iron man laughing", num_inference_steps=20, num_images_per_prompt=1).images[0]
-
 img.save("iron_man.png", format="PNG")
 ```
 
-We get the latency to be `3.25 s`
+The latency (as measured by the `%time` magic) is `3.25 s`.
 
-Now let’s go for its ONNX conversion, to start we can take [this fulfilling script by diffusers](https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py) itself and use it to convert our huggingface model to onnx.
-
-The command I am gonna run is (assuming you have the script saved as `convert_sd_onnx.py`
+To convert to ONNX format, we can use [this script](https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py):
 
 ```sh
-python convert_sd_onnx.py --model_path stabilityai/stable-diffusion-2-1 \
+python convert_stable_diffusion_checkpoint_to_onnx.py \
+  --model_path stabilityai/stable-diffusion-2-1 \
   --output_path sd_onnx/ --opset 16 --fp16
 ```
 
-Note: if one faces any issue with a particular operator not being supported under above `opset` number then upgrade your pytorch version locally to be nightly:
+> :information_source: Note: if a model uses operators unsupported by the `opset` number above, you'll have to upgrade `pytorch` to the nightly build:
+>
+> ```sh
+> pip uninstall torch
+> pip install --pre torch --index-url https://download.pytorch.org/whl/nightly/cu121
+> ```
 
-```sh
-pip uninstall torch
-pip install --pre torch --index-url https://download.pytorch.org/whl/nightly/cu121
-```
-
-once the conversion happens, onnx model will be saved under `sd_onnx` directory with the following structure:
+The result is:
 
 ```
 sd_onnx/
@@ -362,82 +346,67 @@ sd_onnx/
     └── model.onnx
 ```
 
-we can see that there’s an onnx model for each of the component model being used under Stable Diffusion Text to Image generation.
+There’s a separate ONNX model for each Stable Diffusion subcomponent model.
 
 Now to benchmark this similarly we can do the following:
 
 ```python
 from diffusers import OnnxStableDiffusionPipeline
-
 pipe = OnnxStableDiffusionPipeline.from_pretrained("sd_onnx", provider="CUDAExecutionProvider")
 %time img = pipe("Iron man laughing", num_inference_steps=20, num_images_per_prompt=1).images[0]
-
 img.save("iron_man.png", format="PNG")
 ```
 
-And we get the latency to be `**1.34 s**` , which is **2.5x faster** than its normal Huggingface version! now that’s an improvement. We couldn’t find any high noticeable quality difference between the generations of onnx and normal version.
+The overall performance results look great, at ~59% faster! We also didn’t see any noticeable quality difference between the models.
 
-**Note**: In stable diffusion it’s the `Unet` model which takes 90% of its latency so being a low hanging fruit it makes sense to optimize its inference latency first.
+- Prompt: *Iron man laughing*
+  - ONNX inference latency: `1.34s`
+  - HuggingFace version latency: `3.25s`
 
-We will now try to serialize the ONNX version of Unet model to a TensorRT compatible engine format. When building the engine, the builder object selects the most optimized kernels for the chosen platform and configuration. Building the engine from a network definition file can be time consuming and should not be repeated each time we need to perform inference unless the model,  platform, or configuration changes. You can transform the format of the engine after generation and store on disk for reuse later, known as [serializing the engine](https://docs.nvidia.com/deeplearning/sdk/tensorrt-developer-guide/index.html#serial_model_c). Deserializing occurs when you load the engine from disk into memory and continue to use it for inference.
-
+Since we know that the `unet` model is the bottleneck, taking ~90% of the compute time, we can focus on it for further optimization. We try to serialize the ONNX version of the UNet to a TensorRT engine compatible format. When building the engine, the builder object selects the most optimized kernels for the chosen platform and configuration. Building the engine from a network definition file can be time consuming, and should not be repeated each time we need to perform inference unless the model/platform/configuration changes. You can transform the format of the engine after generation and save it to disk for later reuse (known as [*serializing* the engine](https://docs.nvidia.com/deeplearning/sdk/tensorrt-developer-guide/index.html#serial_model_c)). Deserializing occurs when you load the engine from disk into memory:
 
 [![https://developer.nvidia.com/blog/speed-up-inference-tensorrt/](tensorrt.png)](https://developer.nvidia.com/blog/speed-up-inference-tensorrt)
 
-Now first we need to setup tensorRT properly and make sure to follow [this support table](https://onnxruntime.ai/docs/execution-providers/TensorRT-ExecutionProvider.html#requirements) while trying to set it up (it’s a bit painful actually, similar to [cuda/cudnn](https://nvcr.io/cuda/cudnn)). Else if you just want an easy way out then it should be fine to use NVIDIA’s [`nvcr.io/nvidia/tensorrt:22.12-py3`](https://nvcr.io/nvidia/tensorrt:22.12-py3) docker image as a base or use this dockerfile to create a container to run our next steps on:
+To setup TensorRT properly, follow [this support table](https://onnxruntime.ai/docs/execution-providers/TensorRT-ExecutionProvider.html#requirements). It’s a bit painful, and (similar to [cuda/cudnn](https://nvcr.io/cuda/cudnn)) if you just want a quick solution you can use NVIDIA’s [`tensorrt:22.12-py3` docker image](https://nvcr.io/nvidia/tensorrt:22.12-py3) as a base:
 
 ```docker
 FROM nvcr.io/nvidia/tensorrt:22.12-py3
-
 ENV CUDA_MODULE_LOADING=LAZY
-
-RUN pip install -U pip
 RUN pip install ipython transformers optimum[onnxruntime-gpu] onnx diffusers accelerate scipy safetensors composer
-RUN pip uninstall torch -y
-RUN pip install --pre torch --index-url https://download.pytorch.org/whl/nightly/cu121
-
+RUN pip uninstall torch -y && pip install --pre torch --index-url https://download.pytorch.org/whl/nightly/cu121
 COPY sd_onnx sd_onnx
 ```
 
-Once you have the container running, exec inside it and for serialization we can use the following script:
+We can then use the following script for serialization:
 
 ```python
-import torch
 import tensorrt as trt
-import os, sys, argparse
-import numpy as np
-import pycuda.driver as cuda
-import pycuda.autoinit
-from time import time
+import torch
 
-onnx_model = "sd_onnx/unet/model.onnx" # onnx model path
+onnx_model = "sd_onnx/unet/model.onnx"
 engine_filename = "unet.trt" # saved serialized tensorrt engine file path
-
-# define constants
+# constants
 batch_size = 1
 height = 512
 width = 512
 latents_shape = (batch_size, 4, height // 8, width // 8)
-# below is the embed shape actually required by stable diffusion 2.1's Unet model
+# shape required by Stable Diffusion 2.1's UNet model
 embed_shape = (batch_size, 64, 1024)
 timestep_shape = (batch_size,)
 
 TRT_LOGGER = trt.Logger(trt.Logger.INFO)
 TRT_BUILDER = trt.Builder(TRT_LOGGER)
-
 network = TRT_BUILDER.create_network(1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH))
+config = TRT_BUILDER.create_builder_config()
+profile = TRT_BUILDER.create_optimization_profile()
 
-# validate present onnx model
+print("Loading & validating ONNX model")
 onnx_parser = trt.OnnxParser(network, TRT_LOGGER)
 parse_success = onnx_parser.parse_from_file(onnx_model)
 for idx in range(onnx_parser.num_errors):
     print(onnx_parser.get_error(idx))
 if not parse_success:
-    sys.exit('ONNX model parsing failed')
-print("Load Onnx model done")
-
-config = TRT_BUILDER.create_builder_config()
-profile = TRT_BUILDER.create_optimization_profile()
+    raise ValueError('ONNX model parsing failed')
 
 # set input, latent and other shapes required by the layers
 profile.set_shape("sample", latents_shape, latents_shape, latents_shape)
@@ -446,13 +415,10 @@ profile.set_shape("timestep", timestep_shape, timestep_shape, timestep_shape)
 config.add_optimization_profile(profile)
 
 config.set_flag(trt.BuilderFlag.FP16)
-# serialization happens here
+print(f'Serializing & saving engine to "{engine_filename}"')
 serialized_engine = TRT_BUILDER.build_serialized_network(network, config)
-
-## save engine
 with open(engine_filename, 'wb') as f:
     f.write(serialized_engine)
-print(f'Engine is saved to {engine_filename}')
 ```
 
 If everything goes well, at the end you’d see something similar in the logs:
@@ -463,7 +429,6 @@ If everything goes well, at the end you’d see something similar in the logs:
 in building engine: CPU +571, GPU +1652, now: CPU 571, GPU 1652 (MiB)
 Engine is saved to unet.trt
 ```
-
 
 Now let’s move to the inference part with deserializing `unet.trt`. We will use the `TRTModel` class from [x-stable-diffusion](https://github.com/stochasticai/x-stable-diffusion/blob/main/TensorRT/trt_model.py) snippet below for loading the TensorRT engine file.
 
