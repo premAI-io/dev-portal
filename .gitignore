@@ -12,3 +12,4 @@
 # Misc
 .env*
 *.log*
+.DS_Store

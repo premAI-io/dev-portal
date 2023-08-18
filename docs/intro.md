@@ -16,8 +16,11 @@ Prem is a platform for running open-source AI models on your own devices, either
 
 Prem is open source and free to use, no data is collected because we CANNOT see your data, as everything runs on-premise.
 
-- [Get Started as a Developer to use Prem Services](/docs/category/usage)
-- [Publish your AI Service on Prem](/docs/category/service-packaging/)
+- Get Started as a Developer
+  - [Installation](/docs/category/installation)
+  - [Usage](/docs/category/usage)
+- Publish your AI Service on Prem
+  - [Service Packaging](/docs/category/service-packaging/)
 
 ### Main concepts
 
