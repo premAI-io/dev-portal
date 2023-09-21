@@ -42,4 +42,4 @@ cd ./prem-app
 docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
 ```
 
-And you will have the UI at `http://{localhost|server_ip}:8000`.
+And you will have the UI at `http://{localhost|server_ip}:8080`.
