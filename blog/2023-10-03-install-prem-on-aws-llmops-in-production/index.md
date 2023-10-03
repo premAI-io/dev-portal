@@ -70,6 +70,13 @@ This can take a while, so grab an espresso ☕️
 Once the model is downloaded, click **Open** button. This will start the container and open the chat UI. At this point we don't need the embedded user interface, so we can close it.
 
 Now back to the frontend, let's run it locally and connect to our Prem instance.
+You can use directly my own `clarity-ai` fork [github.com/tiero/clarity-ai](https://github.com/tiero/clarity-ai) that has the changes already applied.
+
+### 0. Clone the repo
+
+```sh
+git clone https://github.com/tiero/clarity-ai && cd clarity-ai
+```
 
 #### 1. Set the right environment variable 
 
