@@ -1,0 +1,8 @@
+{
+  "label": "Prem Gateway",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Prem-Gateway acts as an API gateway for directing and managing a multitude of operations.\nIt is responsible for routing requests from the frontend prem-app to either the prem-daemon for Docker image management or directly to Docker images providing prem-services.\nIt is also in charge of managing the authentication/authorization of users and services, TLS, Domain management, and more."
+  }
+}
