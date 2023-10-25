@@ -15,7 +15,7 @@ Launch an EC2 instance using the below bookmark link, opening port 8000 and sele
 
 ### Step by Step Guide:
 
-https://console.aws.amazon.com/ec2/v2/home?region=eu-west-1#LaunchInstanceWizard:ami=ami-06d4672384794fa01
+🔗 [ami-06d4672384794fa01](https://console.aws.amazon.com/ec2/v2/home?region=eu-west-1#LaunchInstanceWizard:ami=ami-06d4672384794fa01)
 
 1. **Access the Bookmark Link**:
     - Open your browser.
@@ -23,7 +23,7 @@ https://console.aws.amazon.com/ec2/v2/home?region=eu-west-1#LaunchInstanceWizard
     - This will take you to the AWS Management Console, specifically to the EC2 Launch Instance Wizard with the public AMI pre-selected.
 
 2. **Choose an Instance Type**:
-    - Scroll down the list until you find `g5.xlarge`. 
+    - Scroll down the list until you find `g5.12xlarge`. 
     - Click on the `Select` button next to it.
 
 3. **Configure Instance Details**:
@@ -38,12 +38,9 @@ https://console.aws.amazon.com/ec2/v2/home?region=eu-west-1#LaunchInstanceWizard
 6. **Configure Security Group**:
     - Choose “Create a new security group”.
     - You will see that by default SSH port 22 is open.
-    - Click on the `Add Rule` button to add more rules.
-        - For HTTP: Choose HTTP from the dropdown and it will automatically populate the port range as `80`.
-        - For HTTPS: Choose HTTPS from the dropdown and it will automatically populate the port range as `443`.
-        - For port 8000: Choose `Custom TCP Rule` from the dropdown, type `8000` in the port range box, and choose 'Anywhere' (or a specific IP or range) in the source box.
-    
-    Remember: Be cautious when opening ports to 'Anywhere' as it exposes those ports to the entire internet. Consider tightening security by only allowing specific IPs or IP ranges.
+    - Select both HTTP (:80) and HTTPS (:443) from the list.
+
+Remember: Be cautious when opening ports to 'Anywhere' as it exposes those ports to the entire internet. Consider tightening security by only allowing specific IPs or IP ranges.
 
 7. **Review and Launch**:
     - Review your settings to ensure everything is correct.
@@ -57,6 +54,13 @@ https://console.aws.amazon.com/ec2/v2/home?region=eu-west-1#LaunchInstanceWizard
     - Finally, click the `Launch Instances` button.
 
 9. **Confirmation Page**:
-    - After launching, you'll be taken to a confirmation page where you can click on the `View Instances` button to see your new instance starting up.
+    - After launching, you'll be taken to a confirmation page where you can click on the `View Instances` button to see your new instance starting up. After a few minutes, your EC2 instance should be up and running.
 
-That's it! After a few minutes, your EC2 instance should be up and running.
+10. **Install Prem**
+
+    - Now login inside the machine using the key pair you created in the previous step.
+    - Run the following command to install Prem:
+    ```bash
+    wget -q https://get.prem.ninja/install.sh -O install.sh; sudo bash ./install.sh
+    ```
+    - After the installation is finished, you can access Prem App on the public IP address of your EC2 instance. You can find the IP address in the EC2 console under the `IPv4 Public IP` column. 

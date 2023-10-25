@@ -18,28 +18,6 @@ wget -q https://get.prem.ninja/install.sh -O install.sh; sudo bash ./install.sh
 If you want to uninstall Prem, you can run the following commands
 
 ```bash
-# navigate to prem directory
-cd ~/prem/
-
-# stop docker-compose services
-docker-compose down
+wget -q https://get.prem.ninja/uninstall.sh -O uninstall.sh; sudo bash ./uninstall.sh
 ```
 ------
-
-If you encounter issues or you want to build the Prem App docker image inside your Linux server
-
-### CPU 
-```bash
-git clone https://github.com/premAI-io/prem-app.git
-cd ./prem-app
-docker-compose up -d
-```
-
-### GPU (NVIDIA)
-```bash
-git clone https://github.com/premAI-io/prem-app.git
-cd ./prem-app
-docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
-```
-
-And you will have the UI at `http://{localhost|server_ip}:8000`.
