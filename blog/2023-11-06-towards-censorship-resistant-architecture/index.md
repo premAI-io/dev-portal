@@ -48,7 +48,7 @@ On the other hand, consumer hardware will be more and more powerful. They are pr
 
 The main problem right now is that we don't have a clear benchmark to use in order to evaluate these models. Both Open LLM Leaderboard and the Alpaca Leaderboard are still far from being able to properly evaluate this new family of LLMs.
 
-A lot of times happened in the last month that a new model reached the top of the Open Source LLM Leaderboard and then after few simple empirical tests you get disappointed by the obvious bad results.
+A lot of times we have seen that a new model reaches the top of the Open Source LLM Leaderboard and then after few simple empirical tests by someone, producing disappointing results.
 As an industry, we are doing a lot of steps and improvements on a daily basis, but we are not there yet and sometimes the hype confuses what is real and what is not.
 
 ## Smaller Models for Smaller Tasks
