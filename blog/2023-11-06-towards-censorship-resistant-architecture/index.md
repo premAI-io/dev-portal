@@ -23,7 +23,7 @@ Prem Labs is introducing **Prem Network**, a decentralized AI Platform enabling 
 
 Until now, the assumption was clear: consumer hardware cannot leverage state-of-the-art LLMs as they are. A resource-constrained environment forced new paradigms to emerge as an alternative to OpenAI centralization.
 
-Open-source showed how bottom-up innovation can arise from every corner of the world and that big corporations don't have a moat for what concerns AI. This has been demonstrated with the advent of new foundational and fine-tuned models like Llama, Llama 2, Falcon 40B, etc.
+Open-source showed how bottom-up innovation can arise from every corner of the world and that big corporations don't have a [moat](https://www.semianalysis.com/i/119223672/we-have-no-moat) for what concerns AI. This has been demonstrated with the advent of new foundational and fine-tuned models like Llama, Llama 2, Falcon 40B, etc.
 
 They are the first step towards creating an alternative to OpenAI centralization.
 However, as more powerful open-source models and weights become available to the public, there is still a huge gap between the requirements necessary to run these models and the current computing capabilities of consumer hardware. Today, consumer hardware is still far from leveraging these models' capabilities (e.g., Llama 65B requires around 90GiB of RAM). For this reason, projects like llama.cpp, Alpaca, Vicuna, and GPT4All emerged to run smaller, distilled, quantized versions of these models using consumer devices (CPU and GPU).
