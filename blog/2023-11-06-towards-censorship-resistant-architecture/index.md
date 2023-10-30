@@ -46,7 +46,7 @@ On the other hand, consumer hardware will be more and more powerful. They are pr
 
 ## Twitter vs. Reality
 
-The main problem right now is that we don't have a clear benchmark to use in order to evaluate these models. Both Open LLM Leaderboard and the Alpaca Leaderboard are still far from being able to properly evaluate this new family of LLMs.
+The main problem right now is that we don't have a clear benchmark to use in order to evaluate these models. Both [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) and the [Alpaca Leaderboard](https://tatsu-lab.github.io/alpaca_eval/) are still [far from being able to properly evaluate this new family of LLMs](https://dev.premai.io/blog/evaluating-open-source-llms).
 
 A lot of times we have seen that a new model reaches the top of the Open Source LLM Leaderboard and then after few simple empirical tests by someone, producing disappointing results.
 As an industry, we are doing a lot of steps and improvements on a daily basis, but we are not there yet and sometimes the hype confuses what is real and what is not.
