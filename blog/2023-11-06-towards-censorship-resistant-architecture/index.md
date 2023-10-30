@@ -21,7 +21,7 @@ Prem Labs is introducing **Prem Network**, a decentralized AI Platform enabling 
 
 ## A Resource Constrained Environment
 
-Until now, the assumption was clear: consumer hardware cannot leverage state-of-the-art LLMs as they are. A resource-constrained environment forced new paradigms to emerge as an alternative to OpenAI centralization.
+Until now, the assumption was clear: consumer hardware cannot leverage state-of-the-art LLMs as they are. A resource-constrained environment forced [new paradigms](https://www.semianalysis.com/i/136469751/the-gpu-poor) to emerge as an alternative to OpenAI centralization.
 
 Open-source showed how bottom-up innovation can arise from every corner of the world and that big corporations don't have a [moat](https://www.semianalysis.com/i/119223672/we-have-no-moat) for what concerns AI. This has been demonstrated with the advent of new foundational and fine-tuned models like Llama, Llama 2, Falcon 40B, etc.
 
