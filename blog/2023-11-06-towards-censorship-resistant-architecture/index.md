@@ -42,7 +42,7 @@ At Prem, we are focusing on engineering a new paradigm of decentralized and priv
 
 On the other hand, consumer hardware will be more and more powerful. They are probably able to run bigger and bigger models.
 
-> Similar as above, at Prem Labs we cannot wait that hardware gets better and better of few magnitudes orders before delivering quality to our end users. It's all about balance and bets and even if things are going crazily fast, still ChatGPT needs 175B Parameters to be the model that it is now. Assuming averagely 1GiB per RAM for each 1B Parameters, we are talking about 175GiB of Memory in order to run the state of the art known model. Obviously, even the best consumer device is far from years to be able to have this amount of memory and we really cannot this to happen.
+> Similarly, at Prem Labs we cannot wait till hardware gets better by few orders of magnitude before delivering quality to our end users. For us it's all about balance and bets and even if things are going crazily fast, still ChatGPT needs 175B Parameters to be the model that it is now. Assuming on average 1GiB of VRAM for each 1B Parameters, we are talking about 175GiB of GPU Memory in order to run the state of the art known model. Obviously, even the best consumer device is far from years to have this amount of memory.
 
 ## Twitter vs. Reality
 
