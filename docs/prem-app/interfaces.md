@@ -1,5 +1,8 @@
 ---
-sidebar_position: 3
+id: interfaces
+title: Interfaces
+sidebar_label: Interfaces
+sidebar_position: 2
 ---
 
 # Interfaces
