@@ -41,6 +41,12 @@ You can always stop to contribute, clicking on the `Stop` button.
 
 ![Network Stop](./assets/network-stop.png)
 
+## 5. Delete the dependencies
+
+If you want to delete the environment and start fresh, you can click on the `Delete` icon and the udnerlying dependencies will be deleted.
+
+![Network Delete](./assets/network-delete.png)
+
 ## Conclusion
 
 You can now contribute to the Prem Network and help us to build the largest computer in the world to run LLMs inference with consumer devices.
