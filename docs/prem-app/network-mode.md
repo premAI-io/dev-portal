@@ -7,19 +7,19 @@ sidebar_position: 3
 
 # Network Mode
 
-If you have installed Prem App on your Mac (Intel and Apple Silicon), you can contribute to the Prem Network by running a Prem node on your machine. In order to do that, you can follow the instructions below.
+If you have installed Prem App on your Mac with Apple Silicon, you can contribute to the Prem Network by running a Prem node on your machine. In order to do that, you can follow the instructions below.
 
 ## 1. Install Prem on your Mac
 
-You can check how to install Prem App on your mac [here](/docs/prem-app/installation/install-macos).
+You must have Prem App installed on your MacOS with Apple Silicon [here](/docs/prem-app/installation/install-macos) in order to provide inference capacity to the Prem Network.
 
 ## 2. Join the Network
 
-Go to `Settings` and scroll down to `Prem Network` section.
+1. Click on `Settings` in the to and scroll down to `Prem Network` section.
 
 ![Network Init](./assets/network-init.png)
 
-- Select the Model you wanna contribute to. 
+- Select the Model you wanna contribute to.
 - Select the number of blocks you want to contribute to.
 - Click on `Start` button.
 
@@ -47,6 +47,6 @@ If you want to delete the environment and start fresh, you can click on the `Del
 
 ![Network Delete](./assets/network-delete.png)
 
-## Conclusion
+## 5. Make open-source AI a reality
 
-You can now contribute to the Prem Network and help us to build the largest computer in the world to run LLMs inference with consumer devices.
+You can now contribute to the Prem Network and help us to build the largest computer in the world to run AI inference with consumer devices.
