@@ -11,8 +11,20 @@ At start, the Prem App is accessible via IP that is printed by the installation 
 
 Domains feature gives you option to easily map your domain to your Prem App application.
 It is necessary to insert two A records:
+
 - A `example.com` to `<IP_GATEWAY>`
 - A `*.example.com` `<IP_GATEWAY>`
+
 You can also use a subdomain ie. `prem.example.com` and `*.prem.example.com`
 
 After this is done you need to add your domain in **Prem App > Settings > Domains**, and you are ready to go.
+
+- Enter Domain
+  
+![Add Domain](./add_domain.png)
+
+- Provide the Domain and Submit
+
+![Add Manual Domain](./add_manual_domain.png)
+
+🚀 You can now access Prem App from the domain provided (e.g., https://demo.prem.ninja) 
