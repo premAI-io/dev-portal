@@ -1,6 +1,6 @@
 ---
-slug: prem-app-v0-2-faster-ai-inference-apple-silicon-no-docker
-title: "Introducing Prem App v0.2.x: Faster Inference, No Docker Needed Anymore"
+slug: prem-app-v0-2-enhanced-speed-without-docker
+title: "Introducing Prem App v0.2.x: Enhanced Speed and Simplified Usage Without Docker"
 authors: [tiero]
 tags: [llm, ai, self-hosted, prem, on-premise, open-source, mistral, whisper, tabby]
 description: "Discover the new Prem App v0.2: Enhanced for Mac with Apple Silicon. Experience faster AI inference without Docker. Now featuring models like Mistral Instruct 7B, Whisper Tiny, MiniLM L6 v2, and more. Ideal for developers and AI enthusiasts seeking advanced AI capabilities on Mac OS. Upgrade your AI tools with Prem App's latest version"
