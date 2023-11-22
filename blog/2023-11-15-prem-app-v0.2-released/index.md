@@ -43,7 +43,7 @@ We're proud to offer a wide range of AI models to cater to various needs and app
 These models represent the cutting edge in open-source generative AI, ensuring you have the tools you need for a wide range of applications.
 
 ### Conclusion
-Prem App v0.2 is more than an update; it's a leap forward local inference on Mac OS, especially for Apple Silicon users. It's about giving you faster, more efficient, and high-quality AI capabilities without the complexity. We're excited for you to experience these advancements and look forward to your feedback.
+Prem App v0.2 is more than an update; it's a leap forward in local inference on Mac OS, especially for Apple Silicon users. It's about giving you faster, more efficient, and high-quality AI capabilities without the complexity. We're excited for you to experience these advancements and look forward to your feedback.
 
 Thank you for your continued support, and stay tuned for more updates!
 
