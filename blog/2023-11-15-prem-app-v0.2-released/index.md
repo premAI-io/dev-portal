@@ -27,7 +27,8 @@ We've listened to your feedback and removed the need for Docker. This means a si
 Our new Rust binary controller efficiently manages the lifecycle of AI models running locally. It handles everything from downloading to running, stopping, and deleting AI model binaries from the user interface.
 
 ### Optimized for Apple Silicon
-Prem App v0.2 fully leverages the power of Apple Silicon GPUs. This optimization allows for running larger AI models, resulting in quicker and higher-quality outputs.
+Prem App v0.2 fully leverages the power of Apple Silicon GPUs thanks to [GGML](https://ggml.ai)-based models built on top of [llama.cpp](https://github.com/ggerganov/llama.cpp) and [whisper.cpp](https://github.com/ggerganov/whisper.cpp). 
+This enable large models and high performance on commodity hardware.
 
 ### A Diverse Range of AI Models and Vector Stores
 We're proud to offer a wide range of AI models and Vector Stores to cater to various needs and applications, from chat completions to full RAG apps. With Prem App v0.2, you have access to:
