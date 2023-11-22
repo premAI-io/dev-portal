@@ -36,7 +36,7 @@ We're proud to offer a wide range of AI models to cater to various needs and app
 - [**Mistral 7B with 128k Context**](https://registry.premai.io/detail.html?service=mistral-7b-128k): Ideal for handling extensive context requirements.
 - [**Whisper Tiny**](https://registry.premai.io/detail.html?service=whisper-tiny-cpp): A compact yet powerful model for speech-to-text needs.
 - [**All MiniLM L6 v2**](https://registry.premai.io/detail.html?service=all-minilm-l6-v2): Perfect for generating embeddings with high accuracy.
-- [**Qadrant**](https://registry.premai.io/detail.html?service=qdrant): A robust vector store database for your data management needs.
+- [**Qdrant**](https://registry.premai.io/detail.html?service=qdrant): A robust vector store database for your data management needs.
 - [**Tabby StarCoder 1B**](https://registry.premai.io/detail.html?service=tabby-starcoder-1b): Tailored for coding and programming-related tasks.
 - [**Tabby CodeLLama 7B**](https://registry.premai.io/detail.html?service=tabby-codellama-7B): Another excellent option for developers and programmers.
 
