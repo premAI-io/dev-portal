@@ -12,7 +12,7 @@ image: "./image.png"
   <meta name="twitter:image" content="./image.png"/>
 </head>
 
-We are excited to announce the release of Prem App v0.2.x. This update brings groundbreaking improvements and features, enhancing your private and sovereign generative AI experience on Mac OS with Apple Silicon chip.
+We are excited to announce the release of Prem App v0.2.x. This update brings performance improvements and new features, enhancing your private and sovereign generative AI experience on Mac OS with Apple Silicon chip.
 
 ![Prem Desktop App with model gallery](./image.png)
 
@@ -28,7 +28,7 @@ Our new Rust binary controller efficiently manages the lifecycle of AI models ru
 
 ### Optimized for Apple Silicon
 Prem App v0.2 fully leverages the power of Apple Silicon GPUs thanks to [GGML](https://ggml.ai)-based models built on top of [llama.cpp](https://github.com/ggerganov/llama.cpp) and [whisper.cpp](https://github.com/ggerganov/whisper.cpp). 
-This enable large models and high performance on commodity hardware.
+This enables larger models and higher inference speed on commodity hardware.
 
 ### A Diverse Range of AI Models and Vector Stores
 We're proud to offer a wide range of AI models and Vector Stores to cater to various needs and applications, from chat completions to full RAG apps. With Prem App v0.2, you have access to:
@@ -45,7 +45,7 @@ These models and stores represent the cutting edge in open-source generative AI,
 
 
 ### Conclusion
-Prem App v0.2 is more than an update; it's a leap forward in local inference on Mac OS, especially for Apple Silicon users. It's about giving you faster, more efficient, and high-quality AI capabilities without the complexity. We're excited for you to experience these advancements and look forward to your feedback.
+Prem App v0.2 is more than an update; it's a leap forward in local inference on Mac OS for Apple Silicon users. It's about giving you faster, more efficient, and high-quality AI capabilities without the complexity. We're excited for you to experience these advancements and look forward to your feedback.
 
 Thank you for your continued support, and stay tuned for more updates!
 
