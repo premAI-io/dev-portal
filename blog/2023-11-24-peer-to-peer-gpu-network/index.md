@@ -14,6 +14,9 @@ image: "./image.png"
 
 We're thrilled to announce the launch of the [Prem Network](https://premai.io/prem-network), a peer-to-peer network poised to transform the landscape of open source AI. Building upon the foundations laid by our recently updated [Prem App](../2023-11-15-prem-app-v0.2-released/index.md), the Prem Network is seamlessly integrated into the app, enabling users to leverage the network's capabilities with ease.
 
+
+![Prem Network world globe](./image.png)
+
 ## The Vision of Prem Network
 
 Our vision with the Prem Network is to break down the barriers in AI processing. It leverages a distributed mesh of GPU providers to optimize the processing of large, open-source models. This means individuals and smaller companies can now compete on the same playing field as 'Big AI', using technology that was previously out of reach.
