@@ -12,8 +12,9 @@ image: "./image.png"
   <meta name="twitter:image" content="./image.png"/>
 </head>
 
-We're thrilled to announce the launch of the [Prem Network](https://premai.io/prem-network), a peer-to-peer network poised to transform the landscape of open source AI. Building upon the foundations laid by our recently updated [Prem App](../2023-11-15-prem-app-v0.2-released/index.md), the Prem Network is seamlessly integrated into the app, enabling users to leverage the network's capabilities with ease.
+We're thrilled to announce the launch of the [Prem Network](https://premai.io/prem-network), a peer-to-peer network poised to transform the landscape of open source AI. Building upon the foundations laid by our recently updated [Prem App](../2023-11-15-prem-app-v0.2-released/index.md), the Prem Network is seamlessly integrated into the app, enabling users to leverage the network's for inference and fine-tuning, split accross multiple devices.
 
+<!--truncate-->
 
 ![Prem Network world globe](./image.png)
 
@@ -31,6 +32,10 @@ Integral to the Prem Network's prowess is its innovative tech stack, comprising 
 - [LibP2P](https://libp2p.io): A foundational element, LibP2P underpins our network's communication infrastructure, ensuring secure and reliable peer-to-peer interactions within the network.
 
 Together, these technologies empower the Prem Network to handle the complex demands of modern AI applications, making it a powerhouse for both individual enthusiasts and large-scale enterprises.
+
+## Public explorer
+
+In tandem with the Prem Network's launch, we're excited to unveil [Petals Explorer](https://network.premai.io) - a complementary user interface that synergizes with the Prem Network. Petals Explorer offers a unique approach to running large language models (LLMs) by adopting a BitTorrent-style distribution mechanism. This integration marks a significant stride in our mission to democratize AI. It allows users to effortlessly tap into the power of LLMs like Llama 2, Falcon, and BLOOM, ensuring efficient operation even on consumer-grade GPUs. The collaboration of Petals Explorer with the Prem Network epitomizes our commitment to accessible, open-source, and peer-to-peer AI solutions, setting a new standard in the AI community."
 
 ## Open to All
 
