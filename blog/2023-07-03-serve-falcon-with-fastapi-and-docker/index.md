@@ -1,7 +1,7 @@
 ---
 slug: serving-falcon-7b-fastapi-docker
 title: Serving Falcon 7B Instruct with FastAPI and Docker
-authors: [filippopedrazzinfp]
+authors: [filopedraz]
 tags: [llm, self-hosted, prem, open-source, fastapi, docker, falcon-7b]
 description: "In this tutorial, we will walk you through the process of serving the Falcon 7B Instruction model using FastAPI and Docker. The complete code for this tutorial is available on GitHub."
 image: "./banner.jpg"
