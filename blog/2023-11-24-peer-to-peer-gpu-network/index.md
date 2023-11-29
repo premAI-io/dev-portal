@@ -25,13 +25,15 @@ Our vision with the Prem Network is to break down the barriers in generative AI.
 ## How It Works
 
 The network operates on a simple yet effective principle: process sensitive layers locally while offloading additional workloads to peers across the network. This peer-to-peer swarm networking approach enables users to increase the size of models they can run locally, effectively turning multiple devices into a singular, powerful computational resource.
-Integral to the Prem Network's prowess is its innovative tech stack, comprising Petals, Nostr, and LibP2P. These cutting-edge technologies synergize to provide a robust and efficient backbone for our network.
+Integral to the Prem Network's prowess is its innovative tech stack, comprising BitTorrent, Petals, Nostr, and LibP2P. These cutting-edge technologies synergize to provide a robust and efficient backbone for our network.
+
+- [BitTorrent](https://www.bittorrent.com): The world's most popular peer-to-peer protocol, BitTorrent is the foundation of our network's peer-to-peer file-sharing. It enables the network to efficiently distribute model, weights and data repositories across the network of Prem clients.
+
+- [Nostr](https://nostr.com): A simple, open protocol that enables a truly censorship-resistant and global social network, used as overlay and discovery protocol for the Prem clients.
 
 - [Petals](https://petals.dev): You can then run large language models at home, BitTorrent‑style. The most sensitive model layers run locally, and the network will automatically fetch the other layers from other peers.
 
 - [LibP2P](https://libp2p.io): A foundational element, LibP2P underpins our network's communication infrastructure, ensuring secure and reliable peer-to-peer interactions within the network.
-
-- [Nostr](https://nostr.com): A simple, open protocol that enables a truly censorship-resistant and global social network.
 
 Together, these technologies empower the Prem Network to handle the complex demands of modern AI applications, making it a powerhouse for both individual enthusiasts and large-scale enterprises.
 
