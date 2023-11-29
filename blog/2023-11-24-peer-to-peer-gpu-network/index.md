@@ -12,7 +12,7 @@ image: "./image.png"
   <meta name="twitter:image" content="./image.png"/>
 </head>
 
-We're thrilled to announce the launch of the [Prem Network](https://premai.io/prem-network), a peer-to-peer network poised to transform the landscape of open source AI. Building upon the foundations laid by our recently updated [Prem App](../2023-11-15-prem-app-v0.2-released/index.md), the Prem Network is seamlessly integrated into the app, enabling users to leverage the network's for inference and fine-tuning, split accross multiple devices.
+We're thrilled to announce the launch of the [Prem Network](https://premai.io/prem-network), a peer-to-peer network poised to transform the landscape of open source AI. Building upon the foundations laid by our recently updated [Prem App](../2023-11-15-prem-app-v0.2-released/index.md), the Prem Network mode is seamlessly integrated into the app, enabling users to leverage the network's for inference and fine-tuning, split accross multiple devices.
 
 <!--truncate-->
 
@@ -20,22 +20,24 @@ We're thrilled to announce the launch of the [Prem Network](https://premai.io/pr
 
 ## The Vision of Prem Network
 
-Our vision with the Prem Network is to break down the barriers in AI processing. It leverages a distributed mesh of GPU providers to optimize the processing of large, open-source models. This means individuals and smaller companies can now compete on the same playing field as 'Big AI', using technology that was previously out of reach.
+Our vision with the Prem Network is to break down the barriers in generative AI. It leverages a distributed mesh of GPU providers to distribute open-source large language models. This means individuals and smaller companies can now compete on the same playing field as **Big AI**, using technology that was previously out of reach.
 
 ## How It Works
 
 The network operates on a simple yet effective principle: process sensitive layers locally while offloading additional workloads to peers across the network. This peer-to-peer swarm networking approach enables users to increase the size of models they can run locally, effectively turning multiple devices into a singular, powerful computational resource.
-Integral to the Prem Network's prowess is its innovative tech stack, comprising Petals, Hivemind, and LibP2P. These cutting-edge technologies synergize to provide a robust and efficient backbone for our network.
+Integral to the Prem Network's prowess is its innovative tech stack, comprising Petals, Nostr, and LibP2P. These cutting-edge technologies synergize to provide a robust and efficient backbone for our network.
 
 - [Petals](https://petals.dev): You can then run large language models at home, BitTorrent‑style. The most sensitive model layers run locally, and the network will automatically fetch the other layers from other peers.
 
 - [LibP2P](https://libp2p.io): A foundational element, LibP2P underpins our network's communication infrastructure, ensuring secure and reliable peer-to-peer interactions within the network.
 
+- [Nostr](https://nostr.com): A simple, open protocol that enables a truly censorship-resistant and global social network.
+
 Together, these technologies empower the Prem Network to handle the complex demands of modern AI applications, making it a powerhouse for both individual enthusiasts and large-scale enterprises.
 
 ## Public explorer
 
-In tandem with the Prem Network's launch, we're excited to unveil [Petals Explorer](https://network.premai.io) - a complementary user interface that synergizes with the Prem Network. Petals Explorer offers a unique approach to running large language models (LLMs) by adopting a BitTorrent-style distribution mechanism. This integration marks a significant stride in our mission to democratize AI. It allows users to effortlessly tap into the power of LLMs like Llama 2, Falcon, and BLOOM, ensuring efficient operation even on consumer-grade GPUs. The collaboration of Petals Explorer with the Prem Network epitomizes our commitment to accessible, open-source, and peer-to-peer AI solutions, setting a new standard in the AI community."
+In tandem with the Prem Network's launch, we're excited to unveil [Petals Explorer](https://network.premai.io) - a complementary user interface that synergizes with the Prem Network. Petals Explorer offers a unique approach to running large language models (LLMs) by adopting a BitTorrent-style distribution mechanism. This integration marks a significant stride in our mission to democratize AI. It allows users to effortlessly tap into the power of LLMs like Llama 2, Falcon, and BLOOM, ensuring efficient operation even on consumer-grade GPUs. The collaboration of Petals with the Prem Network epitomizes our commitment to accessible, open-source, and peer-to-peer AI solutions, setting a new standard in the AI community.
 
 ## Open to All
 
