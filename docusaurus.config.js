@@ -36,14 +36,9 @@ const config = {
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
-          // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/premAI-io/dev-portal/blob/main/',
-            docLayoutComponent: "@theme/DocPage",
-            docItemComponent: "@theme/ApiItem" // Derived from docusaurus-theme-openapi-docs
-        },
+        docs: false,
         blog: {
+          routeBasePath: '/blog',
           showReadingTime: true,
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/premAI-io/dev-portal/blob/main/',
@@ -55,47 +50,8 @@ const config = {
     ],
   ],
 
-  plugins: [
-    [
-      'docusaurus-plugin-openapi-docs',
-      {
-        id: "apiDocs",
-        docsPluginId: "classic",
-        config: {
-          daemon: {
-            specPath: "https://daemon.prem.ninja/openapi.json",
-            outputDir: "docs/prem-daemon/api",
-          },
-          chat: {
-            specPath: "swagger/chat.json",
-            outputDir: "docs/prem-app/usage/chat/api",
-          },
-          embeddings: {
-            specPath: "swagger/embeddings.json",
-            outputDir: "docs/prem-app/usage/embeddings/api",
-          },
-          diffuser: {
-            specPath: "swagger/diffuser.json",
-            outputDir: "docs/prem-app/usage/diffuser/api",
-          },
-          upscaler: { 
-            specPath: "swagger/upscaler.json",
-            outputDir: "docs/prem-app/usage/upscaler/api",
-          },
-          audioToText: {
-            specPath: "swagger/audio-to-text.json",
-            outputDir: "docs/prem-app/usage/audio-to-text/api",
-          },
-          textToAudio: {
-            specPath: "swagger/text-to-audio.json",
-            outputDir: "docs/prem-app/usage/text-to-audio/api",
-          },
-        }
-      },
-    ],
-    require.resolve("@cmfcmf/docusaurus-search-local"),
-  ],
-  themes: ["docusaurus-theme-openapi-docs"],
+  plugins: [],
+  themes: [],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
@@ -112,12 +68,6 @@ const config = {
           src: 'img/logo.svg',
         },
         items: [
-          {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            position: 'left',
-            label: 'Docs',
-          },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/premAI-io/prem-app',
@@ -129,15 +79,6 @@ const config = {
       footer: {
         style: 'dark',
         links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Docs',
-                to: '/docs/intro',
-              },
-            ],
-          },
           {
             title: 'Community',
             items: [
