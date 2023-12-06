@@ -14,13 +14,3 @@ Requires [yarn](https://yarnpkg.com/getting-started/install).
 yarn install  # install the necessary dependencies
 yarn start    # run the webserver
 ```
-
-### Generate OpenAPI Documentation
-
-The [docusaurus-openapi-docs](https://github.com/PaloAltoNetworks/docusaurus-openapi-docs) plugin is used to include the `services` OpenAPI documentation. Run this before `yarn start`:
-
-```sh
-yarn docusaurus gen-api-docs all
-```
-
-[New specifications can be added](https://github.com/PaloAltoNetworks/docusaurus-openapi-docs#configuring-docusaurusconfigjs-plugin-and-theme-usage) and the docs regenerated using `yarn docusaurus gen-api-docs <id>`.
