@@ -422,4 +422,4 @@ docker run --gpus all -p 8000:8000 blog-post/chat-falcon-7b-instruct-gpu:latest
 
 ### Conclusion
 
-In this tutorial, we have demonstrated how to serve the Falcon 7B Instruction model using FastAPI and Docker. This is a crucial first step in serving a model for production use cases. [Learn more](/docs/category/service-packaging/) about packaging your model and exposing it to the Prem Ecosystem to quickly get up and running with your AI initiatives.
+In this tutorial, we have demonstrated how to serve the Falcon 7B Instruction model using FastAPI and Docker. This is a crucial first step in serving a model for production use cases.
