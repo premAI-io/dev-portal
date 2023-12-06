@@ -1,8 +1,0 @@
-{
-  "label": "Vector Store",
-  "position": 4,
-  "link": {
-    "type": "generated-index",
-    "description": "Integrate Prem Vector Store Services in Seconds."
-  }
-}
