@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkprem_docs=self.webpackChunkprem_docs||[]).push([[8239],{2380:s=>{s.exports=JSON.parse('{"label":"streamlit","permalink":"/blog/tags/streamlit","allTagsPath":"/blog/tags","count":1}')}}]);

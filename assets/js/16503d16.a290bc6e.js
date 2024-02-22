@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkprem_docs=self.webpackChunkprem_docs||[]).push([[1432],{2606:s=>{s.exports=JSON.parse('{"label":"whisper","permalink":"/blog/tags/whisper","allTagsPath":"/blog/tags","count":1}')}}]);

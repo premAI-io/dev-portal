@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkprem_docs=self.webpackChunkprem_docs||[]).push([[3186],{7590:e=>{e.exports=JSON.parse('{"label":"paperspace","permalink":"/blog/tags/paperspace","allTagsPath":"/blog/tags","count":1}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkprem_docs=self.webpackChunkprem_docs||[]).push([[5164],{6133:e=>{e.exports=JSON.parse('{"label":"prem-network","permalink":"/blog/tags/prem-network","allTagsPath":"/blog/tags","count":2}')}}]);

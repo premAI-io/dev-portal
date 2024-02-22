@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkprem_docs=self.webpackChunkprem_docs||[]).push([[5162],{9042:e=>{e.exports=JSON.parse('{"label":"perplexity","permalink":"/blog/tags/perplexity","allTagsPath":"/blog/tags","count":2}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkprem_docs=self.webpackChunkprem_docs||[]).push([[4805],{3091:a=>{a.exports=JSON.parse('{"label":"llama2","permalink":"/blog/tags/llama-2","allTagsPath":"/blog/tags","count":1}')}}]);

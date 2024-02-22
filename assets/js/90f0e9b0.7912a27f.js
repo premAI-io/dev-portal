@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkprem_docs=self.webpackChunkprem_docs||[]).push([[1283],{7797:e=>{e.exports=JSON.parse('{"permalink":"/blog/tags/prem/page/2","page":2,"postsPerPage":10,"totalPages":2,"totalCount":11,"previousPage":"/blog/tags/prem","blogDescription":"Blog","blogTitle":"Blog"}')}}]);

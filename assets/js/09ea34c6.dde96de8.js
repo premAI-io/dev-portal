@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkprem_docs=self.webpackChunkprem_docs||[]).push([[9274],{9135:a=>{a.exports=JSON.parse('{"label":"vicuna-7b","permalink":"/blog/tags/vicuna-7-b","allTagsPath":"/blog/tags","count":2}')}}]);

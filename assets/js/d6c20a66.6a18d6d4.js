@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkprem_docs=self.webpackChunkprem_docs||[]).push([[2490],{2559:s=>{s.exports=JSON.parse('{"label":"gpu","permalink":"/blog/tags/gpu","allTagsPath":"/blog/tags","count":2}')}}]);
